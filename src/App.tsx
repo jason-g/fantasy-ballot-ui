@@ -2,27 +2,54 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
+import CategoryCard from './Category';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+
 
 const TITLE =  'Ballot Time'
 
+// GraphQL getter stuffs
 const axiosBackEndGraphQL = axios.create({
   baseURL: 'http://127.0.0.1:3001/graphql',
 });
 
-const GET_CATEGORIES = `
+/*
+TBD workaround
+Revisit this once hasMany bug is fixed in loopback
+*/
+const GET_GRAPHQL = `
 {
-  categories2 {
+  categories {
     categoryId
     displayName
     displayContent
   }
+  entries {
+    entryId
+    displayName
+    featuredImage
+    featuredVideo
+    displayContent
+    categoryId
+  }
 }`;
 
-type ICategory = {  
-  dislayName: string;
-  displayContent: string;
-  categoryId: number;  
-}[]
+type TEntry = {
+  entryId: number,
+  displayName: string,
+  featuredImage: string,
+  featuredVideo: string,
+  displayContent: string,
+  categoryId: number
+};
+
+// set up the tye shape info ... (TBD)
+type TCategory = {
+  categoryId: number,
+  displayContent: string,
+  displayName: string,
+  entries: TEntry[]
+};
 
 class App extends Component {
   state = {
@@ -30,52 +57,104 @@ class App extends Component {
       displayName: "",
       displayContent: "",
       categoryId: 0,
+      entries: []
+    }],
+    entries: [{
+      entryId: 0,
+      displayName: "",
+      featuredImage: "",
+      featuredVideo: "",
+      displayContent: "",
+      categoryId: 0
     }],
     errors: null,
   }
   render() {
     // get the state
     const { categories } = this.state;
-
+    const items = categories.map(category => ({
+      title: <h2>{category.displayName}</h2>,
+      content: <p>{category.displayContent}</p>
+    }));
+    console.log(items);
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
+        <header className="pp-header">
           <h1>{TITLE}</h1>
-          {categories.map(category => (
-          //  <Category category={displayName} />
-          <h4 key={category.categoryId}>{category.displayName}</h4>
-          ))}
         </header>
+        {
+          categories.map(category => (
+            <div className="container">
+              <CategoryCard 
+              title={category.displayName} 
+              body={category.displayContent} 
+              />
+            </div>
+            ))
+        }
       </div>
     );
   }
-
-
+            //<CategoryCard displayName={category.displayName} />
+            // <h4 key={category.categoryId}>{category.displayName}</h4>
 
   componentDidMount() {
-    this.onFetchFromBackEnd();
+    this.onFetchFromBackEnd(GET_GRAPHQL);
   }
 
-  onFetchFromBackEnd = () => {
+  onFetchFromBackEnd = (URL: string) => {
+    let categories: TCategory[] = [];
     axiosBackEndGraphQL
-      .post('', { query: GET_CATEGORIES })
+      .post('', { query: URL })
       .then(result => {
-          console.log(result.data.data.categories2);
+          console.log(result.data.data);
+          //TBD - revisit when loopback fixes the hasMany bug
+          result.data.data.categories.map(function (category: TCategory) {
+            let entries: TEntry[] = [];
+            console.log('Found Category:' + category.displayName);
+            result.data.data.entries.filter(function (entry: TEntry) {
+              if (entry.categoryId === category.categoryId) {
+                //category.entries.push(entry);
+                entries.push(entry);
+              }
+            })
+            console.log('Found Entries:' + entries);
+            category.entries = entries;
+          });
           this.setState(() => ({
-            categories: result.data.data.categories2,
+            categories: result.data.data.categories,
+            entries: result.data.data.entries,
             errors: result.data.errors,
           }));
         }
-      );
+      )
+      .then(() => {
+        this.rebuildData();
+      });
   };
+
+  // rebuild data due to bug in loopback hasMany
+  rebuildData = () => {
+    for (const key in this.state.categories) {
+      let category = this.state.categories[key];
+      let entries: {
+        entryId: number,
+        displayName: string,
+        featuredImage: string,
+        featuredVideo: string,
+        displayContent: string,
+        categoryId: number
+      }[] = [];
+      this.state.entries.filter(function (entry) {
+        if (entry.categoryId === category.categoryId) {
+          //category.entries.push(entry);
+          entries.push(entry);
+        }
+      })
+      console.log (category.displayName);
+      console.log (entries);
+    }
+  }
 }
 
-const Category = ({ category = {} }) => (
-  <div>
-    <p>
-      <strong>Category: {category}</strong>
-    </p>
-  </div>
-);
 export default App;
