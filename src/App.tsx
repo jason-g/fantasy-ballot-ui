@@ -4,6 +4,8 @@ import './App.css';
 import axios from 'axios';
 import CategoryCard from './Category';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import { Card, CardImg, CardText, CardBody,
+  CardTitle, CardSubtitle, Button, Row, Col } from 'reactstrap';
 
 
 const TITLE =  'Ballot Time'
@@ -57,7 +59,14 @@ class App extends Component {
       displayName: "",
       displayContent: "",
       categoryId: 0,
-      entries: []
+      entries: [{
+        entryId: 0,
+        displayName: "",
+        featuredImage: "",
+        featuredVideo: "",
+        displayContent: "",
+        categoryId: 0
+      }]
     }],
     entries: [{
       entryId: 0,
@@ -85,18 +94,34 @@ class App extends Component {
         {
           categories.map(category => (
             <div className="container">
-              <CategoryCard 
-              title={category.displayName} 
-              body={category.displayContent} 
-              />
+              <CategoryCard title={category.displayName} >
+                  <Row>
+                {
+                    category.entries.map(entry => (
+                      <Col sm="6">
+                      <Card>
+                        <CardImg top width="100%"
+                          src={entry.featuredImage}
+                          className="h-50 mh-50"
+                          alt={"Image for" + entry.displayName} />
+                        <CardBody>
+                          <CardTitle>{entry.displayName}</CardTitle>
+                          <CardSubtitle>Card subtitle</CardSubtitle>
+                          <CardText>{entry.displayContent}</CardText>
+                          <Button>Select {entry.displayName}</Button>
+                        </CardBody>
+                      </Card>
+                    </Col>
+                    ))
+                }
+                  </Row>
+              </CategoryCard>
             </div>
             ))
         }
       </div>
     );
   }
-            //<CategoryCard displayName={category.displayName} />
-            // <h4 key={category.categoryId}>{category.displayName}</h4>
 
   componentDidMount() {
     this.onFetchFromBackEnd(GET_GRAPHQL);

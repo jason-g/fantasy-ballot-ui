@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Collapse, Button, CardBody, Card } from 'reactstrap';
+import { Panel } from 'react-bootstrap';
 
 interface IProps {
   title: string;
-  body: string;
 }
 
 interface IState {
@@ -41,14 +41,16 @@ export default class CategoryCard extends React.Component<IProps, any> {
         this.setState({ collapse: !this.state.collapse });
     }
 
+            //<Button color="primary" onClick={this.toggle} style={{ marginBottom: '1rem' }}>{title}</Button>
+            //<h5>Current state: {this.state.status}</h5>
   public render () {
     const title: string = this.props.title;
-    const body: string = this.props.body;
 
     return (
         <div>
-            <Button color="primary" onClick={this.toggle} style={{ marginBottom: '1rem' }}>{title}</Button>
-            <h5>Current state: {this.state.status}</h5>
+            <Card onClick={this.toggle} className="ponter">
+                <CardBody>{title}</CardBody>
+            </Card>
             <Collapse
                 isOpen={this.state.collapse}
                 onEntering={this.onEntering}
@@ -58,7 +60,9 @@ export default class CategoryCard extends React.Component<IProps, any> {
             >
                 <Card>
                     <CardBody>
-                        {body}
+                        {
+                            this.props.children
+                        }
                     </CardBody>
                 </Card>
             </Collapse>

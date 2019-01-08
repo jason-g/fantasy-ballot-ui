@@ -31,6 +31,14 @@
   }
 }
 
+.ponter {
+  cursor: pointer;
+}
+
+.card-img {
+  overflow: hidden;
+}
+
 .panel__head {
 	padding: 0;
 	border: 0;
