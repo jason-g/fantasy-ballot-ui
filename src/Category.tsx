@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { Collapse, Button, CardBody, Card } from 'reactstrap';
 import { Panel } from 'react-bootstrap';
+import './Category.css';
+import CustomInput from 'reactstrap/lib/CustomInput';
 
 interface IProps {
   title: string;
+  id: number;
 }
 
 interface IState {
@@ -45,11 +48,20 @@ export default class CategoryCard extends React.Component<IProps, any> {
             //<h5>Current state: {this.state.status}</h5>
   public render () {
     const title: string = this.props.title;
-
+    const id: number = this.props.id;
     return (
         <div>
             <Card onClick={this.toggle} className="ponter">
-                <CardBody>{title}</CardBody>
+                <CardBody> 
+                    <div className="category-title">{title}</div>
+                    <div>
+                        <CustomInput 
+                            type="checkbox" 
+                            id={"notpicked_" + id} 
+                            label={title + " not yet picked"} 
+                            disabled />
+                        </div> 
+                </CardBody>
             </Card>
             <Collapse
                 isOpen={this.state.collapse}

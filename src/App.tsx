@@ -5,7 +5,7 @@ import axios from 'axios';
 import CategoryCard from './Category';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { Card, CardImg, CardText, CardBody,
-  CardTitle, CardSubtitle, Button, Row, Col } from 'reactstrap';
+  CardTitle, CardSubtitle, Button, Row, Col, Jumbotron, Container } from 'reactstrap';
 
 
 const TITLE =  'Ballot Time'
@@ -91,10 +91,22 @@ class App extends Component {
         <header className="pp-header">
           <h1>{TITLE}</h1>
         </header>
+        <div>
+          <Jumbotron fluid>
+            <Container fluid>
+              <h1 className="display-3">91st Academy Awards</h1>
+              <p className="lead">Live on Sunday</p>
+              <hr className="my-2" />
+              <p>February 24th, 2019 at 8:00 Eastern Time</p>
+            </Container>
+          </Jumbotron>
+        </div>
         {
           categories.map(category => (
             <div className="container">
-              <CategoryCard title={category.displayName} >
+              <CategoryCard 
+                title={category.displayName} 
+                id={category.categoryId}>
                   <Row>
                 {
                     category.entries.map(entry => (
