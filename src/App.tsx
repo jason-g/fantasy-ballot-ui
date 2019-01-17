@@ -12,7 +12,7 @@ const TITLE =  'Ballot Time'
 
 // GraphQL getter stuffs
 const axiosBackEndGraphQL = axios.create({
-  baseURL: 'http://127.0.0.1:3001/graphql',
+  baseURL: '/graphql',
 });
 
 /*
@@ -110,7 +110,7 @@ class App extends Component {
                   <Row>
                 {
                     category.entries.map(entry => (
-                      <Col sm="6">
+                      <Col sm="6" key={entry.entryId}>
                       <Card>
                         <CardImg top width="100%"
                           src={entry.featuredImage}
