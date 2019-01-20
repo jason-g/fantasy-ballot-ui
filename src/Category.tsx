@@ -7,6 +7,8 @@ import CustomInput from 'reactstrap/lib/CustomInput';
 interface IProps {
   title: string;
   id: number;
+  selection?: number,
+  selection_name? : string,
 }
 
 interface IState {
@@ -49,17 +51,29 @@ export default class CategoryCard extends React.Component<IProps, any> {
   public render () {
     const title: string = this.props.title;
     const id: number = this.props.id;
+    const selection: number | undefined = this.props.selection;
+    const selection_name: string | undefined = this.props.selection_name;
     return (
         <div>
             <Card onClick={this.toggle} className="ponter">
                 <CardBody> 
                     <div className="category-title">{title}</div>
                     <div>
-                        <CustomInput 
-                            type="checkbox" 
-                            id={"notpicked_" + id} 
-                            label={title + " not yet picked"} 
-                            disabled />
+                        {selection !== undefined &&
+                            <CustomInput
+                                type="checkbox"
+                                id={"picked_" + id}
+                                label={title + " : " + selection_name}
+                                checked
+                                disabled />
+                        } 
+                        {selection == undefined &&
+                            <CustomInput
+                                type="checkbox"
+                                id={"notpicked_" + id}
+                                label={title + " not yet picked"}
+                                disabled />
+                        }
                         </div> 
                 </CardBody>
             </Card>

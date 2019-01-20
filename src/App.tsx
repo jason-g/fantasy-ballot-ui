@@ -4,6 +4,8 @@ import CategoryCard from './Category';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { Card, CardImg, CardText, CardBody,
   CardTitle, CardSubtitle, Button, Row, Col, Jumbotron, Container } from 'reactstrap';
+import { normalize } from 'path';
+import { Next } from 'react-bootstrap/lib/Pagination';
 
 
 const TITLE =  'Ballot Time'
@@ -20,13 +22,15 @@ type TEntry = {
   featured_image: string,
   featuredVideo: string,
   display_content: string,
-  category_id: number
+  category_id: number,
 };
 type TCategory = {
   category_id: number,
   display_content: string,
   display_name: string,
-  entries: TEntry[]
+  entries: TEntry[],
+  selection?: number,
+  selection_name?: string,
 };
 type TSelection = {
   id: number,
@@ -38,6 +42,8 @@ class App extends Component {
   state = {
     categories: [{
       display_name: "",
+      selection: 0,
+      selection_name: "",
       display_content: "",
       category_id: 0,
       entries: [{
@@ -162,7 +168,9 @@ store:
             <div className="container" key={category.category_id}>
               <CategoryCard 
                 title={category.display_name} 
-                id={category.category_id}>
+                id={category.category_id}
+                selection={category.selection}
+                selection_name={category.selection_name}>
                   <Row>
                 {
                     category.entries.map(entry => (
@@ -215,24 +223,41 @@ store:
       .then(categories => {
         categories.map((category: TCategory) => {
           let local_entries: TEntry[] = [];
-          console.log('Found Category:' + category.display_name);
           entries.filter(function (entry: TEntry) {
             if (entry.category_id === category.category_id) {
               //category.entries.push(entry);
               local_entries.push(entry);
             }
           })
-          console.log('Found Entries:' + local_entries);
           category.entries = local_entries;
         });
       this.setState({ categories: categories });
       });
+    })
+    .then(() => {
+      fetch(URL.selections)
+        .then(result => result.json())
+        .then(selections => {
+          this.normalizeSelections(selections);
+          this.setState({ selections: selections, isLoading: false })
+        });
     });
-    fetch(URL.selections)
-    .then(result => result.json())
-    .then(data => this.setState({ selections: data, isLoading: false }));
   };
 
+  normalizeSelections = (selections: TSelection[]) => {
+    let categories: TCategory[] = this.state.categories;
+    selections.map((selection: TSelection) => {
+      let category = categories.find(category => category.category_id == selection.category_id);
+      if (category) {
+        category.selection = selection.entry_id;
+        let entries: TEntry | undefined = this.state.entries.find(entry => entry.entry_id == selection.entry_id);
+        if (entries) {
+          category.selection_name = entries.display_name;
+        }
+      }
+    });
+    this.setState({ categories: categories });
+  };
 }
 
 export default App;
