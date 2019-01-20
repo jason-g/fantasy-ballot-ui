@@ -104,7 +104,7 @@ const styles = {
 
 // set up the type shape info ... (TBD)
 type TCategory = {  
-  displayName: string;
-  displayContent: string;
-  categoryId: number;  
+  display_name: string;
+  display_content: string;
+  category_id: number;  
 }

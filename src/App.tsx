@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import axios from 'axios';
 import CategoryCard from './Category';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { Card, CardImg, CardText, CardBody,
@@ -10,82 +8,140 @@ import { Card, CardImg, CardText, CardBody,
 
 const TITLE =  'Ballot Time'
 
-// GraphQL getter stuffs
-const axiosBackEndGraphQL = axios.create({
-  baseURL: '/graphql',
-});
-
-/*
-TBD workaround
-Revisit this once hasMany bug is fixed in loopback
-*/
-const GET_GRAPHQL = `
-{
-  categories {
-    categoryId
-    displayName
-    displayContent
-  }
-  entries {
-    entryId
-    displayName
-    featuredImage
-    featuredVideo
-    displayContent
-    categoryId
-  }
-}`;
-
-type TEntry = {
-  entryId: number,
-  displayName: string,
-  featuredImage: string,
-  featuredVideo: string,
-  displayContent: string,
-  categoryId: number
+const GET_REST = {
+  categories: '/categories',
+  entries: '/entries',
+  selections: '/selections',
 };
 
-// set up the tye shape info ... (TBD)
+type TEntry = {
+  entry_id: number,
+  display_name: string,
+  featured_image: string,
+  featuredVideo: string,
+  display_content: string,
+  category_id: number
+};
 type TCategory = {
-  categoryId: number,
-  displayContent: string,
-  displayName: string,
+  category_id: number,
+  display_content: string,
+  display_name: string,
   entries: TEntry[]
+};
+type TSelection = {
+  id: number,
+  category_id: number,
+  entry_id: number,
 };
 
 class App extends Component {
   state = {
     categories: [{
-      displayName: "",
-      displayContent: "",
-      categoryId: 0,
+      display_name: "",
+      display_content: "",
+      category_id: 0,
       entries: [{
-        entryId: 0,
-        displayName: "",
-        featuredImage: "",
+        entry_id: 0,
+        display_name: "",
+        featured_image: "",
         featuredVideo: "",
-        displayContent: "",
-        categoryId: 0
+        display_content: "",
+        category_id: 0
       }]
     }],
     entries: [{
-      entryId: 0,
-      displayName: "",
-      featuredImage: "",
+      entry_id: 0,
+      display_name: "",
+      featured_image: "",
       featuredVideo: "",
-      displayContent: "",
-      categoryId: 0
+      display_content: "",
+      category_id: 0
     }],
+    selections: [{
+      id: 0,
+      category_id: 0,
+      entry_id: 0
+    }],
+    post: '',
     errors: null,
+    isLoading: true,
   }
+
+  /*
+Redux
+
+store:
+  categories: {
+    x: {
+      category_id: x,
+      display_name: A,
+      display_content: B,
+      order: 0,
+    }
+  }
+  entries: {
+    y: {
+      entry_id: y,
+      display_name: "",
+      featured_image: "",
+      featuredVideo: "",
+      display_content: "",
+      category_id: 0,
+      order: 0,
+    }
+  }
+  selections: {
+    x: { 
+      category_id: x, 
+      entry_id: y, 
+    }
+  }
+
+  const ids_by_order =
+      Object.values(categories)
+            .reduce((ordered_ids, category) => {
+                        ordered_ids[category.order] = category.id
+                        return ordered_ids
+                    }, [])
+
+  ids_by_order.map(id => categories[id])
+  */
+
+  updatePick = (e: any) => {
+    const entry_id = e.target.dataset.entry;
+    const category_id = e.target.dataset.category;
+    this.setState({post: entry_id});
+    console.log('sending: ' + category_id + ' : '+ entry_id);
+    //uupdate or new
+    const updated = this.sendPost(category_id, entry_id);
+  };
+
+  sendPost = async (category_id: number, entry_id: number) => {
+    const response = await fetch('/selections', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ "category_id": Number(category_id), "entry_id": Number(entry_id), "user_id": 0 }),
+    });
+    const body = await response.text();
+    this.setState({ responseToPost: body });
+  };
+
   render() {
     // get the state
     const { categories } = this.state;
     const items = categories.map(category => ({
-      title: <h2>{category.displayName}</h2>,
-      content: <p>{category.displayContent}</p>
+      title: <h2>{category.display_name}</h2>,
+      content: <p>{category.display_content}</p>
     }));
     console.log(items);
+    if (this.state.errors) {
+      return <p>Aw Snap - there was an error - hint: check the console</p>;
+    }
+    if (this.state.isLoading) {
+      return <p>Loading…</p>;
+    }
     return (
       <div className="App">
         <header className="pp-header">
@@ -103,24 +159,28 @@ class App extends Component {
         </div>
         {
           categories.map(category => (
-            <div className="container">
+            <div className="container" key={category.category_id}>
               <CategoryCard 
-                title={category.displayName} 
-                id={category.categoryId}>
+                title={category.display_name} 
+                id={category.category_id}>
                   <Row>
                 {
                     category.entries.map(entry => (
-                      <Col sm="6" key={entry.entryId}>
+                      <Col sm="6" key={entry.entry_id}>
                       <Card>
                         <CardImg top width="100%"
-                          src={entry.featuredImage}
+                          src={entry.featured_image}
                           className="h-50 mh-50"
-                          alt={"Image for" + entry.displayName} />
+                          alt={"Image for" + entry.display_name} />
                         <CardBody>
-                          <CardTitle>{entry.displayName}</CardTitle>
+                          <CardTitle>{entry.display_name}</CardTitle>
                           <CardSubtitle>Card subtitle</CardSubtitle>
-                          <CardText>{entry.displayContent}</CardText>
-                          <Button>Select {entry.displayName}</Button>
+                          <CardText>{entry.display_content}</CardText>
+                          <Button onClick={this.updatePick.bind(this)}
+                            data-entry={entry.entry_id}
+                            data-category={entry.category_id}>
+                            Select {entry.display_name}
+                          </Button>
                         </CardBody>
                       </Card>
                     </Col>
@@ -136,62 +196,43 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.onFetchFromBackEnd(GET_GRAPHQL);
+    //this.onFetchFromBackEnd(GET_GRAPHQL);
+    this.onGetDataFromAPI(GET_REST);
   }
 
-  onFetchFromBackEnd = (URL: string) => {
-    let categories: TCategory[] = [];
-    axiosBackEndGraphQL
-      .post('', { query: URL })
-      .then(result => {
-          console.log(result.data.data);
-          //TBD - revisit when loopback fixes the hasMany bug
-          result.data.data.categories.map(function (category: TCategory) {
-            let entries: TEntry[] = [];
-            console.log('Found Category:' + category.displayName);
-            result.data.data.entries.filter(function (entry: TEntry) {
-              if (entry.categoryId === category.categoryId) {
-                //category.entries.push(entry);
-                entries.push(entry);
-              }
-            })
-            console.log('Found Entries:' + entries);
-            category.entries = entries;
-          });
-          this.setState(() => ({
-            categories: result.data.data.categories,
-            entries: result.data.data.entries,
-            errors: result.data.errors,
-          }));
-        }
-      )
-      .then(() => {
-        this.rebuildData();
+  onGetDataFromAPI = (URL: { categories: string, entries: string, selections: string}) => {
+    let entries: TEntry[] = [];  
+    fetch(URL.entries)
+    .then(result => result.json())
+    .then(local_entries => {
+      console.log('Entries:' + local_entries);
+      entries = local_entries;
+      this.setState({ entries: local_entries });
+    })
+    .then(() => {
+      fetch(URL.categories)
+      .then(result => result.json())
+      .then(categories => {
+        categories.map((category: TCategory) => {
+          let local_entries: TEntry[] = [];
+          console.log('Found Category:' + category.display_name);
+          entries.filter(function (entry: TEntry) {
+            if (entry.category_id === category.category_id) {
+              //category.entries.push(entry);
+              local_entries.push(entry);
+            }
+          })
+          console.log('Found Entries:' + local_entries);
+          category.entries = local_entries;
+        });
+      this.setState({ categories: categories });
       });
+    });
+    fetch(URL.selections)
+    .then(result => result.json())
+    .then(data => this.setState({ selections: data, isLoading: false }));
   };
 
-  // rebuild data due to bug in loopback hasMany
-  rebuildData = () => {
-    for (const key in this.state.categories) {
-      let category = this.state.categories[key];
-      let entries: {
-        entryId: number,
-        displayName: string,
-        featuredImage: string,
-        featuredVideo: string,
-        displayContent: string,
-        categoryId: number
-      }[] = [];
-      this.state.entries.filter(function (entry) {
-        if (entry.categoryId === category.categoryId) {
-          //category.entries.push(entry);
-          entries.push(entry);
-        }
-      })
-      console.log (category.displayName);
-      console.log (entries);
-    }
-  }
 }
 
 export default App;
