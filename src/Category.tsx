@@ -1,18 +1,41 @@
 import * as React from 'react';
 import { Collapse, Button, CardBody, Card } from 'reactstrap';
-import { Panel } from 'react-bootstrap';
 import './Category.css';
 import CustomInput from 'reactstrap/lib/CustomInput';
+import { Category, CategoriesActionTypes } from './store/categories/types';
+import { ConnectedReduxProps } from './store';
+//import { ApplicationState } from './store';
 
 interface IProps {
   title: string;
   id: number;
-  selection?: number,
-  selection_name? : string,
+  selection?: cleanSelection,
 }
 
 interface IState {
+    status: string,
+    collapse: boolean,
+    selection: Selection,
+}
 
+// Separate state props + dispatch props to their own interfaces.
+interface PropsFromState {
+  loading: boolean
+  data: Category[]
+  errors?: string
+}
+
+// We can use `typeof` here to map our dispatch types to the props, like so.
+interface PropsFromDispatch {
+  fetchRequest: typeof CategoriesActionTypes.FETCH_REQUEST
+}
+
+// Combine both state + dispatch props - as well as any props we want to pass - in a union type.
+type AllProps = PropsFromState & PropsFromDispatch & ConnectedReduxProps
+
+interface cleanSelection {
+    entry_id : number,
+    entry_name: string,
 }
 
 export default class CategoryCard extends React.Component<IProps, any> {
@@ -23,7 +46,12 @@ export default class CategoryCard extends React.Component<IProps, any> {
         this.onExiting = this.onExiting.bind(this);
         this.onExited = this.onExited.bind(this);
         this.toggle = this.toggle.bind(this);
-        this.state = { collapse: false, status: 'Closed' };
+        this.state = { 
+            collapse: false, 
+            status: 'Closed',
+            selection: (props.selection)? props.selection : undefined,
+            selection_name: (props.selection_name)? props.selection_name : undefined,
+         };
     }
 
     onEntering() {
@@ -46,13 +74,10 @@ export default class CategoryCard extends React.Component<IProps, any> {
         this.setState({ collapse: !this.state.collapse });
     }
 
-            //<Button color="primary" onClick={this.toggle} style={{ marginBottom: '1rem' }}>{title}</Button>
-            //<h5>Current state: {this.state.status}</h5>
   public render () {
     const title: string = this.props.title;
     const id: number = this.props.id;
-    const selection: number | undefined = this.props.selection;
-    const selection_name: string | undefined = this.props.selection_name;
+    const selection: cleanSelection | undefined = this.props.selection;
     return (
         <div>
             <Card onClick={this.toggle} className="ponter">
@@ -63,7 +88,7 @@ export default class CategoryCard extends React.Component<IProps, any> {
                             <CustomInput
                                 type="checkbox"
                                 id={"picked_" + id}
-                                label={title + " : " + selection_name}
+                                label={title + " : " + selection.entry_name}
                                 checked
                                 disabled />
                         } 
