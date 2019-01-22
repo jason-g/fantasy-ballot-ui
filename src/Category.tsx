@@ -34,6 +34,7 @@ interface PropsFromDispatch {
 type AllProps = PropsFromState & PropsFromDispatch & ConnectedReduxProps
 
 interface cleanSelection {
+    id : number | undefined,
     entry_id : number,
     entry_name: string,
 }

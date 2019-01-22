@@ -1,7 +1,5 @@
 import { Reducer } from 'redux'
 import { SelectionsState, SelectionsActionTypes } from './types'
-import { addSelection } from '../../utils/api'
-import { resolve } from 'url';
 
 const initialState: SelectionsState = {
   data: [],

@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeEvery, takeLatest } from 'redux-saga/effects'
 import { SelectionsActionTypes } from './types'
 import { fetchError, fetchSuccess, selectSelection } from './actions'
-import { callApi, addSelection } from '../../utils/api'
+import { callApi, makeSelection } from '../../utils/api'
 
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT || ''
 
@@ -28,8 +28,9 @@ function* handleFetch() {
 function* handlePost(selection: any) {
   let category_id = selection.category_id;
   let entry_id = selection.entry_id;
+  let id = selection.id || undefined;
   try {
-    const res = yield call(addSelection, category_id, entry_id)
+    const res = yield call(makeSelection, category_id, entry_id, id)
     if (res.error) {
       yield put(fetchError(res.error))
     } else {

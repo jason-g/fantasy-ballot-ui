@@ -3,3 +3,8 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: large;
 }
+.row {
+    background-color: darkslategray;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}

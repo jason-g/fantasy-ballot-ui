@@ -1,69 +1,50 @@
 import * as React from 'react';
-import { Collapse, Button, CardBody, Card } from 'reactstrap';
-import { Panel } from 'react-bootstrap';
 import './Category.css';
-import CustomInput from 'reactstrap/lib/CustomInput';
-import { Store } from 'redux';
-import { Category, CategoriesActionTypes, CategoriesState } from './store/categories/types';
-import categoriesSaga from './store/categories/sagas';
-import { ConnectedReduxProps } from './store';
-import { connect } from 'react-redux';
-import { EntriesState } from './store/entries/types';
-import { SelectionsState } from './store/selections/types';
-//import { ApplicationState } from './store';
+import { EntriesState, Entry } from './store/entries/types';
+import Col from 'reactstrap/lib/Col';
+import Card from 'reactstrap/lib/Card';
+import CardImg from 'reactstrap/lib/CardImg';
+import CardBody from 'reactstrap/lib/CardBody';
+import CardTitle from 'reactstrap/lib/CardTitle';
+import CardSubtitle from 'reactstrap/lib/CardSubtitle';
+import CardText from 'reactstrap/lib/CardText';
+import './Entry.css';
 
 interface IProps {
-  title: string;
-  id: number;
-//  store: Store<ApplicationState>,
-  selection?: number | undefined,
-  selection_name? : string | undefined,
+  entry: Entry;
 }
 
-interface IState {
-    status: string,
-    collapse: boolean,
-    selection: number,
-    selection_name: string,
-}
 
-// Separate state props + dispatch props to their own interfaces.
 
-interface PropsFromState {
-  categories: CategoriesState,
-  entries: EntriesState,
-  selections: SelectionsState
-};
-
-interface PropsFromDispatch {
-  [key: string]: any,
-};
-// Any additional component props go here.
-interface OwnProps {
-  categories: CategoriesState
-  entries: EntriesState
-  selections: SelectionsState
-}
-type AllProps = PropsFromState & PropsFromDispatch & OwnProps;
-
-const mapStateToProps = (state: PropsFromState): OwnProps => ({
-  categories: state.categories,
-  entries: state.entries,
-  selections: state.selections,
-})
-
-class EntryCard extends React.Component<IProps, any> {
+export default class EntryCard extends React.Component<IProps> {
   public render () {
-    const title: string = this.props.title;
-    const id: number = this.props.id;
-    const selection: number | undefined = this.props.selection;
-    const selection_name: string | undefined = this.props.selection_name;
+    const entry: Entry = this.props.entry;
     return (
         <div>
-           Entry 
+            <Col xs="auto" sm="auto" key={entry.entry_id}>
+                <Card className="entry-card">
+                    <CardImg top width="100%"
+                        src={entry.featured_image}
+                        className="h-50 mh-50 round-img"
+                        alt={"Image for" + entry.display_name} />
+                    <CardBody>
+                        <span>
+                            <CardTitle>{entry.display_name}</CardTitle>
+                        </span>
+                        <span>
+                            <CardSubtitle>Card subtitle</CardSubtitle>
+                        </span>
+                        <span>
+                            <CardText>
+                                <a href={entry.display_content} target="_blank">View more...</a>
+                            </CardText>
+                        </span>
+                        {this.props.children}
+                    </CardBody>
+                </Card>
+            </Col>
         </div>
     );
   }
 }
 
-export default connect(mapStateToProps)(EntryCard);

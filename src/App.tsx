@@ -3,11 +3,15 @@ import './App.css';
 import CategoryCard from './Category';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { Card, CardImg, CardText, CardBody,
-  CardTitle, CardSubtitle, Button, Row, Col, Jumbotron, Container } from 'reactstrap';
+  CardTitle, CardSubtitle, Button, Row, Col, Jumbotron, Container, Modal } from 'reactstrap';
 import { Provider, connect } from 'react-redux';
 import { CategoriesActionTypes, Category, CategoriesState } from './store/categories/types';
 import { Entry, EntriesState } from './store/entries/types';
 import { Selection, SelectionsState } from './store/selections/types';
+import { ModalHeader, ModalFooter } from 'react-bootstrap';
+import ModalBody from 'reactstrap/lib/ModalBody';
+import EntryCard from './Entry';
+ 
 
 
 const TITLE =  'Ballot Time'
@@ -45,10 +49,16 @@ class App extends React.Component<AllProps> {
   updatePick = (e: any) => {
     const entry_id = e.target.dataset.entry;
     const category_id = e.target.dataset.category;
+    let id;
+    const current_selection = this.getSelection(category_id);
+    if (current_selection) {
+      id = current_selection.id;
+    }
     this.props.dispatch({
       type: "@@selections/SELECT_ENTRY",
       entry_id: entry_id,
       category_id: category_id,
+      id: id,
     })
   };
 
@@ -71,7 +81,7 @@ class App extends React.Component<AllProps> {
     if (!entry) {
       return undefined;
     }
-    return {entry_id: selection.entry_id, entry_name: entry.display_name};
+    return {entry_id: selection.entry_id, entry_name: entry.display_name, id: selection.id};
   };
 
   render() {
@@ -82,14 +92,19 @@ class App extends React.Component<AllProps> {
     if (this.state.errors) {
       return <p>Aw Snap - there was an error - hint: check the console</p>;
     }
-    if (this.isLoading()) {
-      return <p>Loading…</p>;
-    }
+
     return (
       <div className="App">
         <header className="pp-header">
           <h1>{TITLE}</h1>
         </header>
+        <div>
+          <Modal isOpen={this.isLoading()} className={this.props.className}>
+            <ModalBody>
+              Please wait a moment while we load things up...
+            </ModalBody>
+          </Modal>
+        </div>
         <div>
           <Jumbotron fluid>
             <Container fluid>
@@ -108,6 +123,28 @@ class App extends React.Component<AllProps> {
                 id={category.category_id}
                 selection={this.getSelection(category.category_id)}>
                   <Row>
+                  {
+                    entries.filter(entry => entry.category_id == category.category_id)
+                    .map(entry => (
+                      <EntryCard key={entry.entry_id} entry={entry}>
+                        <Button onClick={this.updatePick.bind(this)}
+                          data-entry={entry.entry_id}
+                          data-category={entry.category_id}>
+                          Select {entry.display_name}
+                        </Button>
+                      </EntryCard>
+                    ))
+                  }
+                  </Row>
+              </CategoryCard>
+            </div>
+            ))
+        }
+      </div>
+    );
+  }
+
+  /*
                   {
                     entries.filter(entry => entry.category_id == category.category_id)
                     .map(entry => (
@@ -131,14 +168,7 @@ class App extends React.Component<AllProps> {
                       </Col>
                     ))
                   }
-                  </Row>
-              </CategoryCard>
-            </div>
-            ))
-        }
-      </div>
-    );
-  }
+  */
 
   componentDidMount() {
     this.props.dispatch({
