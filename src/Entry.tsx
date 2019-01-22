@@ -25,7 +25,7 @@ export default class EntryCard extends React.Component<IProps> {
                 <Card className="entry-card">
                     <CardImg top width="100%"
                         src={entry.featured_image}
-                        className="h-50 mh-50 round-img"
+                        className="mh-50 round-img"
                         alt={"Image for" + entry.display_name} />
                     <CardBody>
                         <span>
