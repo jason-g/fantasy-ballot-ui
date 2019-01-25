@@ -10,25 +10,30 @@ import { entriesReducer } from './entries/reducers'
 import { selectionsReducer } from './selections/reducers'
 import { SelectionsState } from './selections/types';
 import selectionsSaga from './selections/sagas';
+import { userReducer } from './user/reducers'
+import { UserState } from './user/types';
+import userSaga from './user/sagas';
 
 // The top-level state object
 export interface ApplicationState {
-  categories: CategoriesState
-  entries: EntriesState
-  selections: SelectionsState
+  categories: CategoriesState,
+  entries: EntriesState,
+  selections: SelectionsState,
+  user: UserState,
 }
 
 // Additional props for connected React components. This prop is passed by default with `connect()`
 export interface ConnectedReduxProps<A extends Action = AnyAction> {
-  dispatch: Dispatch<A>
+  dispatch: Dispatch<A>;
 }
 
 export const rootReducer = combineReducers<ApplicationState>({
   categories: categoriesReducer,
   entries: entriesReducer,
   selections: selectionsReducer,
+  user: userReducer,
 })
 
 export function* rootSaga() {
-  yield all([fork(categoriesSaga), fork(entriesSaga), fork(selectionsSaga)])
+  yield all([fork(categoriesSaga), fork(entriesSaga), fork(selectionsSaga), fork(userSaga)])
 }

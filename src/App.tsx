@@ -144,32 +144,6 @@ class App extends React.Component<AllProps> {
     );
   }
 
-  /*
-                  {
-                    entries.filter(entry => entry.category_id == category.category_id)
-                    .map(entry => (
-                      <Col sm="6" key={entry.entry_id}>
-                        <Card>
-                          <CardImg top width="100%"
-                            src={entry.featured_image}
-                            className="h-50 mh-50"
-                            alt={"Image for" + entry.display_name} />
-                          <CardBody>
-                            <CardTitle>{entry.display_name}</CardTitle>
-                            <CardSubtitle>Card subtitle</CardSubtitle>
-                            <CardText>{entry.display_content}</CardText>
-                            <Button onClick={this.updatePick.bind(this)}
-                              data-entry={entry.entry_id}
-                              data-category={entry.category_id}>
-                              Select {entry.display_name}
-                            </Button>
-                          </CardBody>
-                        </Card>
-                      </Col>
-                    ))
-                  }
-  */
-
   componentDidMount() {
     this.props.dispatch({
       type: "@@categories/FETCH_REQUEST",
