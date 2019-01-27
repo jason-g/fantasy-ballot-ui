@@ -13,6 +13,9 @@ import selectionsSaga from './selections/sagas';
 import { userReducer } from './user/reducers'
 import { UserState } from './user/types';
 import userSaga from './user/sagas';
+import { navigationReducer } from './navigation/reducers';
+import { NavigationState } from './navigation/types';
+import navigationSaga from './navigation/sagas';
 
 // The top-level state object
 export interface ApplicationState {
@@ -20,6 +23,7 @@ export interface ApplicationState {
   entries: EntriesState,
   selections: SelectionsState,
   user: UserState,
+  navigation: NavigationState,
 }
 
 // Additional props for connected React components. This prop is passed by default with `connect()`
@@ -32,8 +36,9 @@ export const rootReducer = combineReducers<ApplicationState>({
   entries: entriesReducer,
   selections: selectionsReducer,
   user: userReducer,
+  navigation: navigationReducer,
 })
 
 export function* rootSaga() {
-  yield all([fork(categoriesSaga), fork(entriesSaga), fork(selectionsSaga), fork(userSaga)])
+  yield all([fork(categoriesSaga), fork(entriesSaga), fork(selectionsSaga), fork(userSaga), fork(navigationSaga)])
 }

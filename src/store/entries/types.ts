@@ -2,7 +2,7 @@ export interface Entry {
   entry_id: number,
   display_name: string,
   featured_image: string,
-  featuredVideo: string,
+  featured_video: string,
   display_content: string,
   category_id: number,
 };

@@ -61,3 +61,34 @@ export async function callLogin(username: string, password: string) {
     const body = await response.text();
     return (body);
 }
+
+export async function callLogout() {
+    const user: any = JSON.parse(localStorage.getItem('user') || '{}');
+    const token = user && user.id;
+    if (!token) {
+        console.log('No user token present!');
+        return({});
+    }
+    const response = await fetch('/Users/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token,
+        },
+        body: JSON.stringify({}),
+    });
+    const body = await response.text();
+    return (body);
+}
+
+export async function callSignup(username: string, password: string, email: string) {
+    const response = await fetch('/Users', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ "username": username, "password": password, "email": email }),
+    });
+    const body = await response.text();
+    return (body);
+}

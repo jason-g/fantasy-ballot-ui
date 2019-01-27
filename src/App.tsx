@@ -11,6 +11,8 @@ import { Selection, SelectionsState } from './store/selections/types';
 import { ModalHeader, ModalFooter } from 'react-bootstrap';
 import ModalBody from 'reactstrap/lib/ModalBody';
 import EntryCard from './Entry';
+import { Redirect } from 'react-router';
+import { UserState } from './store/user/types';
  
 
 
@@ -20,7 +22,8 @@ const TITLE =  'Ballot Time'
 interface PropsFromState {
   categories: CategoriesState,
   entries: EntriesState,
-  selections: SelectionsState
+  selections: SelectionsState,
+  user: UserState,
 };
 
 interface PropsFromDispatch {
@@ -29,9 +32,10 @@ interface PropsFromDispatch {
 interface OwnProps {
   //store: Store<ApplicationState>
   //history: History
-  categories: CategoriesState
-  entries: EntriesState
-  selections: SelectionsState
+  categories: CategoriesState,
+  entries: EntriesState,
+  selections: SelectionsState,
+  user: UserState,
 }
 type AllProps = PropsFromState & PropsFromDispatch & OwnProps;
 
@@ -39,7 +43,9 @@ const mapStateToProps = (state: PropsFromState): OwnProps => ({
   categories: state.categories,
   entries: state.entries,
   selections: state.selections,
+  user: state.user,
 })
+
 
 class App extends React.Component<AllProps> {
   state = {
@@ -84,7 +90,27 @@ class App extends React.Component<AllProps> {
     return {entry_id: selection.entry_id, entry_name: entry.display_name, id: selection.id};
   };
 
+  getEntryLabel = (category_id: number, entry: Entry) => {
+    const selected = this.getSelection(category_id);
+    if (selected && selected.entry_id == entry.entry_id) {
+      return "Selected";
+    }
+    return "Select " + entry.display_name;
+  }
+
+  isEntrySelected = (category_id: number, entry: Entry) => {
+    const selected = this.getSelection(category_id);
+    if (selected && selected.entry_id == entry.entry_id) {
+      return true;
+    }
+    return false;
+  }
+
   render() {
+    if (!this.props.user.authenticated) {
+      console.log('No user... redirecting to Login page');
+      return <Redirect to='/login' />;
+    }
     // get the state
     const categories = this.props.categories.data;
     const entries = this.props.entries.data;
@@ -92,12 +118,13 @@ class App extends React.Component<AllProps> {
     if (this.state.errors) {
       return <p>Aw Snap - there was an error - hint: check the console</p>;
     }
-
-    return (
-      <div className="App">
+/*
         <header className="pp-header">
           <h1>{TITLE}</h1>
         </header>
+        */
+    return (
+      <div className="App">
         <div>
           <Modal isOpen={this.isLoading()} className={this.props.className}>
             <ModalBody>
@@ -126,11 +153,13 @@ class App extends React.Component<AllProps> {
                   {
                     entries.filter(entry => entry.category_id == category.category_id)
                     .map(entry => (
-                      <EntryCard key={entry.entry_id} entry={entry}>
+                      <EntryCard key={entry.entry_id} 
+                        selected={this.isEntrySelected(category.category_id, entry)}
+                        entry={entry}>
                         <Button onClick={this.updatePick.bind(this)}
                           data-entry={entry.entry_id}
                           data-category={entry.category_id}>
-                          Select {entry.display_name}
+                          {this.getEntryLabel(category.category_id, entry)}
                         </Button>
                       </EntryCard>
                     ))

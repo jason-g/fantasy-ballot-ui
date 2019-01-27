@@ -1,0 +1,13 @@
+.userIcon {
+    padding-right: .5rem;
+}
+form {
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 2rem;
+    padding: 2rem;
+}
+
+.nav-bar {
+    background-color: white !important;
+}

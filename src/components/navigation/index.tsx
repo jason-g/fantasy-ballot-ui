@@ -1,23 +1,36 @@
 import React from 'react';
 import { Nav, NavItem, Dropdown, DropdownItem, DropdownToggle, DropdownMenu, NavLink } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import './navigation.css';
+import { Link, Router, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { NavigationState } from '../../store/navigation/types';
+import { Button } from 'reactstrap';
+import { UserState } from '../../store/user/types';
 
 interface PropsFromDispatch {
   [key: string]: any,
 };
+interface PropsFromState {
+  navigation: NavigationState,
+  user: UserState,
+};
 interface myState {
     dropdownOpen: boolean,
-    loggedIn: boolean,
+    user: UserState,
+    redirect?: string,
 }
+interface OwnProps {
+}
+type AllProps = PropsFromState & PropsFromDispatch & OwnProps;
 
-export default class Navigation extends React.Component<PropsFromDispatch, myState> {
+class Navigation extends React.Component<AllProps, myState> {
   constructor(props: any) {
     super(props);
 
     this.toggle = this.toggle.bind(this);
     this.state = {
       dropdownOpen: false,
-      loggedIn: false,
+      user: this.props.user,
     };
   }
 
@@ -27,29 +40,58 @@ export default class Navigation extends React.Component<PropsFromDispatch, mySta
     });
   }
 
+  doLogout = () => {
+    this.props.dispatch({
+      type: "@@user/LOGOUT",
+    })
+    /*this.setState({
+      redirect: '/login'
+    })
+    this.props.dispatch({
+      type: "@@navigation/NAVIGATE",
+      page: "/login"
+    })*/
+  }
+
   render() {
+    if (this.state.redirect && this.state.redirect != '') {
+      return <Redirect to={this.state.redirect} />
+    }
     return (
       <div>
-        <Nav tabs>
+        <Nav tabs className="fixed-top nav-bar">
           <NavItem>
-            <NavLink href="/ballot" active>Ballot</NavLink>
+            <NavLink href="/ballot" active={this.props.state}>Ballot</NavLink>
           </NavItem>
           <Dropdown nav isOpen={this.state.dropdownOpen} toggle={this.toggle}>
             <DropdownToggle nav caret>
-              UserNameHere
+              <span className="userIcon fas fa-user-circle"></span>
+              {this.props.user? this.props.user.username : 'Please Login'} 
             </DropdownToggle>
             <DropdownMenu>
               <DropdownItem header>Account</DropdownItem>
-              <DropdownItem>
-                  <NavLink href="/login">Login</NavLink>
+              <DropdownItem disabled={!this.props.user.authenticated}>
+                 <div onClick={this.doLogout}>Edit account</div>
               </DropdownItem>
-              <DropdownItem>
-                  <NavLink href="/logout">Logout</NavLink>
+              <DropdownItem disabled={!this.props.user.authenticated}>
+                <div onClick={this.doLogout}>Logout</div>
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
+          {this.props.children}
         </Nav>
       </div>
     );
   }
+  componentDidUpdate(context: any) {
+    console.log('Update from Login:');
+    console.dir(context);
+  }
 }
+
+const mapStateToProps = (state: PropsFromState): OwnProps => ({
+  navigation: state.navigation,
+  user: state.user,
+})
+
+export default connect(mapStateToProps)(Navigation);

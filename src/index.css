@@ -16,3 +16,7 @@ code {
 .jumbotron {
     background-color:#efece3 !important; 
 }
+
+.main-body {
+  padding-top: 55px;
+}

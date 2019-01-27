@@ -1,0 +1,38 @@
+.round-img {
+    height: 180px !important;
+    width: 180px !important;
+    padding: 15px;
+    border-radius: 50% !important;
+}
+.card-title {
+    font-size: x-large;
+    color: crimson;
+    text-align: center;
+}
+.entry-card {
+    min-width: 250px !important;
+    width: 250px !important;
+    align-items: center;
+    margin: 10px;
+    height: 400px;
+    background-color: floralwhite !important;
+}
+.entry-card-selected {
+    background-color: gold !important;
+}
+.card-subtitle {
+    font-style: italic;
+    font-weight: lighter;
+    font-size: small;
+}
+.bullet {
+    display: 'inline-block';
+    margin: '0 2px';
+    transform: 'scale(0.8)';
+  }
+ title {
+    font-size: 14;
+ }
+ pos {
+    margin-bottom: 12;
+ }

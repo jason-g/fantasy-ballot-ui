@@ -11,18 +11,26 @@ import CardText from 'reactstrap/lib/CardText';
 import './Entry.css';
 
 interface IProps {
-  entry: Entry;
+  entry: Entry,
+  selected: boolean | undefined,
 }
 
 
 
 export default class EntryCard extends React.Component<IProps> {
+  getClassNames = () => {
+      let classname = 'entry-card';
+      if (this.props.selected) {
+        classname = classname + ' entry-card-selected'
+      }
+      return classname;
+  }
   public render () {
     const entry: Entry = this.props.entry;
     return (
         <div>
             <Col xs="auto" sm="auto" key={entry.entry_id}>
-                <Card className="entry-card">
+                <Card className={this.getClassNames()}>
                     <CardImg top width="100%"
                         src={entry.featured_image}
                         className="mh-50 round-img"
@@ -32,11 +40,11 @@ export default class EntryCard extends React.Component<IProps> {
                             <CardTitle>{entry.display_name}</CardTitle>
                         </span>
                         <span>
-                            <CardSubtitle>Card subtitle</CardSubtitle>
+                            <CardSubtitle>{entry.display_content}</CardSubtitle>
                         </span>
                         <span>
                             <CardText>
-                                <a href={entry.display_content} target="_blank">View more...</a>
+                                <a href={entry.featured_video} target="_blank">View trailer...</a>
                             </CardText>
                         </span>
                         {this.props.children}
