@@ -34,8 +34,6 @@ const reducer: Reducer<UserState> = (state = initialState, action) => {
         }
         case UserActionTypes.LOGIN_SUCCESS: {
             localStorage.setItem('user', JSON.stringify(action.payload));
-            console.log('Login Success:');
-            console.dir(action);
             return {
                 ...state,
                 loading: false,
@@ -46,9 +44,20 @@ const reducer: Reducer<UserState> = (state = initialState, action) => {
                 username: action.payload.username,
             }
         }
+        case UserActionTypes.ADD_TOKEN: {
+            const user = JSON.parse(action.user);
+            //ToDo add api check
+            return {
+                ...state,
+                loading: false,
+                authenticated: true,
+                token: user.token,
+                id: user.id,
+                userId: user.userId,
+                username: user.username,
+            }
+        }
         case UserActionTypes.LOGIN_ERROR: {
-            console.log('000');
-            console.dir(action.payload);
             return { ...state, loading: false, message: action.payload }
         }
         case UserActionTypes.ERROR: {

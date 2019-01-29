@@ -3,7 +3,6 @@ export async function callApi(method: string, url: string, path: string, data?: 
     const user: any = JSON.parse(localStorage.getItem('user') || '{}');
     const token = user && user.id;
     if (!token) {
-        console.dir(user);
         console.log('No user token present!');
        // return ({});
     }

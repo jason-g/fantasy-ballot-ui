@@ -16,6 +16,7 @@ export enum UserActionTypes {
   SIGNUP_SUCCESS = '@@user/SIGNUP_SUCCESS',
   LOGIN_ERROR = '@@user/LOGIN_ERROR',
   ERROR = '@@user/ERROR',
+  ADD_TOKEN = '@@user/ADD_TOKEN',
 }
 
 export interface UserState {

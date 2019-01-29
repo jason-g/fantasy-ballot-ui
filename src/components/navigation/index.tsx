@@ -63,6 +63,9 @@ class Navigation extends React.Component<AllProps, myState> {
           <NavItem>
             <NavLink href="/ballot" active={this.props.state}>Ballot</NavLink>
           </NavItem>
+          <NavItem>
+            <NavLink href="/results" active={this.props.state}>Results</NavLink>
+          </NavItem>
           <Dropdown nav isOpen={this.state.dropdownOpen} toggle={this.toggle}>
             <DropdownToggle nav caret>
               <span className="userIcon fas fa-user-circle"></span>
@@ -82,10 +85,6 @@ class Navigation extends React.Component<AllProps, myState> {
         </Nav>
       </div>
     );
-  }
-  componentDidUpdate(context: any) {
-    console.log('Update from Login:');
-    console.dir(context);
   }
 }
 

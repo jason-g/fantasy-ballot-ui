@@ -63,3 +63,6 @@
 .panel[aria-expanded='true'] .panel__content {
 	opacity: 1;
 }
+.jumbotron {
+  padding: 0px !important;
+}

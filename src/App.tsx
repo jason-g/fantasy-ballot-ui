@@ -2,20 +2,16 @@ import React, { Component } from 'react';
 import './App.css';
 import CategoryCard from './Category';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import { Card, CardImg, CardText, CardBody,
-  CardTitle, CardSubtitle, Button, Row, Col, Jumbotron, Container, Modal } from 'reactstrap';
-import { Provider, connect } from 'react-redux';
-import { CategoriesActionTypes, Category, CategoriesState } from './store/categories/types';
+import {  Button, Jumbotron, Container, Modal } from 'reactstrap';
+import { connect } from 'react-redux';
+import { Category, CategoriesState } from './store/categories/types';
 import { Entry, EntriesState } from './store/entries/types';
-import { Selection, SelectionsState } from './store/selections/types';
-import { ModalHeader, ModalFooter } from 'react-bootstrap';
+import { SelectionsState } from './store/selections/types';
 import ModalBody from 'reactstrap/lib/ModalBody';
 import EntryCard from './Entry';
 import { Redirect } from 'react-router';
 import { UserState } from './store/user/types';
  
-
-
 const TITLE =  'Ballot Time'
 
 // Separate props from state and props from dispatch to their own interfaces.
@@ -30,8 +26,6 @@ interface PropsFromDispatch {
   [key: string]: any,
 };
 interface OwnProps {
-  //store: Store<ApplicationState>
-  //history: History
   categories: CategoriesState,
   entries: EntriesState,
   selections: SelectionsState,
@@ -45,7 +39,6 @@ const mapStateToProps = (state: PropsFromState): OwnProps => ({
   selections: state.selections,
   user: state.user,
 })
-
 
 class App extends React.Component<AllProps> {
   state = {
@@ -106,8 +99,37 @@ class App extends React.Component<AllProps> {
     return false;
   }
 
+  preAuthCheck = () => {
+    const tmpUser = localStorage.getItem('user');
+    if (tmpUser) {
+      let objUser = JSON.parse(tmpUser);
+      objUser.username = localStorage.getItem('username') || 'Unknown User';
+      //ToDo add verify on token in auth api call
+      this.props.dispatch({
+        type: "@@user/ADD_TOKEN",
+        user: JSON.stringify(objUser),
+      });
+    }
+  }
+
+  renderEntry = (category: Category, entry: Entry, index: number) => {
+    return (
+      <EntryCard key={entry.entry_id}
+        selected={this.isEntrySelected(category.category_id, entry)}
+        entry={entry}>
+        <Button onClick={this.updatePick.bind(this)}
+          className="mt-auto entry-button"
+          data-entry={entry.entry_id}
+          data-category={entry.category_id}>
+          {this.getEntryLabel(category.category_id, entry)}
+        </Button>
+      </EntryCard>
+    );
+  }
+
   render() {
     if (!this.props.user.authenticated) {
+      this.preAuthCheck();
       console.log('No user... redirecting to Login page');
       return <Redirect to='/login' />;
     }
@@ -118,11 +140,7 @@ class App extends React.Component<AllProps> {
     if (this.state.errors) {
       return <p>Aw Snap - there was an error - hint: check the console</p>;
     }
-/*
-        <header className="pp-header">
-          <h1>{TITLE}</h1>
-        </header>
-        */
+
     return (
       <div className="App">
         <div>
@@ -149,22 +167,14 @@ class App extends React.Component<AllProps> {
                 title={category.display_name} 
                 id={category.category_id}
                 selection={this.getSelection(category.category_id)}>
-                  <Row>
+                <div className="container">
+                  <div className="card-deck d-flex align-items-stretch row entry-cards">
                   {
                     entries.filter(entry => entry.category_id == category.category_id)
-                    .map(entry => (
-                      <EntryCard key={entry.entry_id} 
-                        selected={this.isEntrySelected(category.category_id, entry)}
-                        entry={entry}>
-                        <Button onClick={this.updatePick.bind(this)}
-                          data-entry={entry.entry_id}
-                          data-category={entry.category_id}>
-                          {this.getEntryLabel(category.category_id, entry)}
-                        </Button>
-                      </EntryCard>
-                    ))
+                    .map((entry, index) => this.renderEntry(category, entry, index))
                   }
-                  </Row>
+                  </div>
+                </div>
               </CategoryCard>
             </div>
             ))

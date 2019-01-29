@@ -5,7 +5,7 @@ import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Provider } from 'react-redux'
 //import { Router, Route } from 'react-router'
-import { Route, Link, Router } from 'react-router-dom'
+import { Route, Link, Router, Redirect } from 'react-router-dom'
 import history from './components/history'
 //import store from './store'
 import configureStore from './configureStore';
@@ -21,10 +21,6 @@ import BallotProgress from './components/progress';
 const store = configureStore();
 
 const rootElement = document.getElementById('root')
-    //todo - add conditional logic for auth and  / or ballot page
-    /*<div className="container-fluid">
-    </div>
-    */
 ReactDOM.render(
   <Provider store={store}>
   <Navigation>
@@ -32,6 +28,7 @@ ReactDOM.render(
   </Navigation>
     <Router history={history}>
       <div className="main-body">
+        <Redirect from="/" to="ballot" />
         <Route path="/signup" key="1" component={Signup} />
         <Route path="/ballot" key="2" component={App} />
         <Route path="/login" exact key="3" component={Login} />

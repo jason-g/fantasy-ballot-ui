@@ -6,7 +6,6 @@ import history from '../../components/history'
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT || ''
 
 function* handleNavigate(page: string) {
-  console.log('reouting back or some shit');
   return {};
 }
 

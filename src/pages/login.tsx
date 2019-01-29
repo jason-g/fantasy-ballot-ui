@@ -6,13 +6,11 @@ import Container from 'reactstrap/lib/Container';
 import Col from 'reactstrap/lib/Col';
 import { withRouter, Redirect, Link } from 'react-router-dom';
 import { isAuthenticated } from '../utils/auth';
-import { render } from 'react-dom';
 import Alert from 'reactstrap/lib/Alert';
 import { UserState } from '../store/user/types';
 
-
 interface PropsFromDispatch {
-  [key: string]: any,
+    [key: string]: any,
 };
 interface myState {
     username: string,
@@ -22,16 +20,16 @@ interface myState {
     user: UserState,
 }
 interface PropsFromState {
-  user: UserState,
+    user: UserState,
 };
 interface OwnProps {
 }
 type AllProps = PropsFromState & PropsFromDispatch & OwnProps;
 
 class Login extends React.Component<AllProps, myState> {
-    constructor(props: any){
+    constructor(props: any) {
         super(props);
-        this.state = { 
+        this.state = {
             username: '',
             password: '',
             realm: 'ritas house',
@@ -40,10 +38,8 @@ class Login extends React.Component<AllProps, myState> {
         };
     }
 
-    handleSubmit(event: any) : void {
+    handleSubmit(event: any): void {
         event.preventDefault();
-        console.log('submit');
-        console.dir(this.state);
         let username = this.state.username;
         let password = this.state.password;
         this.props.dispatch(
@@ -53,11 +49,6 @@ class Login extends React.Component<AllProps, myState> {
                 password: password
             }
         )
-        /*this.setState({
-            redirect: '/ballot'
-        })
-        */
-
     }
 
     handleChange(event: any): void {
@@ -66,11 +57,11 @@ class Login extends React.Component<AllProps, myState> {
         const { name } = target;
         switch (name) {
             case 'username': {
-                this.setState({username: value})
+                this.setState({ username: value })
                 break;
             }
             case 'password': {
-                this.setState({password: value})
+                this.setState({ password: value })
                 break;
             }
             default: {
@@ -80,15 +71,13 @@ class Login extends React.Component<AllProps, myState> {
     }
 
     showMessage() {
-        console.log('Show Message');
         if (!this.props.user) {
             return;
         }
-        console.dir(this.props.user.message);
-        if (this.props.user.message && this.props.user.message.error ) {
+        if (this.props.user.message && this.props.user.message.error) {
             return (
                 <Alert color="danger">
-                    Authentication eror!  Looks like that is either the wrong username or password.
+                    Authentication error! <br />Looks like that is either the wrong username or password.
                 </Alert>
             )
         }

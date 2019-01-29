@@ -8,7 +8,7 @@ import Alert from 'reactstrap/lib/Alert';
 
 
 interface PropsFromDispatch {
-  [key: string]: any,
+    [key: string]: any,
 };
 interface myState {
     username: string,
@@ -16,31 +16,37 @@ interface myState {
     email?: string,
     realm?: string,
     user: UserState,
+    validate: any,
 }
 interface PropsFromState {
-  user: UserState,
+    user: UserState,
 };
 interface OwnProps {
 }
 type AllProps = PropsFromState & PropsFromDispatch & OwnProps;
 
 class Signup extends React.Component<AllProps, myState> {
-    constructor(props: any){
+    constructor(props: any) {
         super(props);
-        this.state = { 
+        this.state = {
             username: '',
             password: '',
             email: '',
             realm: 'ritas house',
             user: this.props.user,
+            validate: {
+                emailState: '',
+                usernameState: '',
+                passwordState: '',
+            }
         };
+        this.handleChange = this.handleChange.bind(this);
+        this.validateEmail = this.validateEmail.bind(this);
     }
 
 
-    handleSubmit(event: any) : void {
+    handleSubmit(event: any): void {
         event.preventDefault();
-        console.log('signup:');
-        console.dir(this.state);
         let username = this.state.username;
         let password = this.state.password;
         let email = this.state.email;
@@ -59,22 +65,22 @@ class Signup extends React.Component<AllProps, myState> {
         const { target } = event;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const { name } = target;
-        console.log('nae:'+ name);
         switch (name) {
             case 'username': {
-                this.setState({username: value})
+                this.setState({ username: value });
                 break;
             }
             case 'password': {
-                this.setState({password: value})
+                this.setState({ password: value });
                 break;
             }
             case 'email': {
-                this.setState({email: value})
+                this.setState({ email: value });
+                this.validateEmail(event);
                 break;
             }
             case 'realm': {
-                this.setState({realm: value})
+                this.setState({ realm: value });
                 break;
             }
             default: {
@@ -83,21 +89,30 @@ class Signup extends React.Component<AllProps, myState> {
         }
     }
 
-    
+
     showMessage() {
-        console.log('Show Message');
-        console.dir(this.props)
         if (!this.props.user) {
             return;
         }
-        console.dir(this.props.user.message);
-        if (this.props.user.message && this.props.user.message.error ) {
+        if (this.props.user.message && this.props.user.message.error) {
             return (
                 <Alert color="danger">
-                    Signup error, check for errors below.
+                    Signup error: <br />
+                    {this.props.user.message.error.message}
                 </Alert>
             )
         }
+    }
+
+    validateEmail(event: any) {
+        const emailRex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const { validate } = this.state
+        if (emailRex.test(event.target.value)) {
+            validate.emailState = 'has-success'
+        } else {
+            validate.emailState = 'has-danger'
+        }
+        this.setState({ validate })
     }
 
     render() {
@@ -113,7 +128,12 @@ class Signup extends React.Component<AllProps, myState> {
                     <FormGroup>
                         <Label for="signupEmail">Email</Label>
                         <Input type="email" name="email"
-                            id="signupEmail" placeholder="email address" onChange={this.handleChange.bind(this)} />
+                            id="signupEmail" placeholder="email address"
+                            valid={this.state.validate.emailState === 'has-success'}
+                            invalid={this.state.validate.emailState === 'has-danger'}
+                            onChange={
+                                this.handleChange
+                            } />
                     </FormGroup>
                     <FormGroup>
                         <Label for="signupPassword">Password</Label>
@@ -127,18 +147,9 @@ class Signup extends React.Component<AllProps, myState> {
         );
     }
 }
-                    /*
-                    <FormGroup>
-                        <Label for="signupRealm">Party realm:</Label>
-                        <Input type="select" name="realm"
-                            id="signupRealm" onChange={this.handleChange.bind(this)}>
-                            <option>Ritas house</option>
-                        </Input>
-                    </FormGroup>
-                    */
 
 const mapStateToProps = (state: PropsFromState): OwnProps => ({
-  user: state.user,
+    user: state.user,
 })
 
 export default connect(mapStateToProps)(Signup);

@@ -45,7 +45,7 @@ class BallotProgress extends React.Component<AllProps, myState> {
         }
         return (
             <div className="ballot-progress flex-grow-1 flex-fill">
-                <Progress color="warning" value={100 * total / selected} >
+                <Progress color="warning" value={100 * selected / total} >
                     {selected + ' out of ' + total}
                 </Progress>
             </div>
