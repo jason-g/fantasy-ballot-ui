@@ -15,5 +15,5 @@ export const error = (message: string) => action(UserActionTypes.ERROR, message)
 export const loginSuccess = (message: string) => action(UserActionTypes.LOGIN_SUCCESS, message)
 export const loginError = (error: any) => action(UserActionTypes.LOGIN_ERROR, error)
 export const editUser = (id: number) => action(UserActionTypes.EDIT, id)
-export const addToken = (user: any) => action(UserActionTypes.ADD_TOKEN, user)
+export const addToken = (user: any, redirect?: string) => action(UserActionTypes.ADD_TOKEN, user, redirect)
 //ToDo - shape up these anys

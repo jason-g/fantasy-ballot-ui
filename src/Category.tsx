@@ -81,7 +81,7 @@ export default class CategoryCard extends React.Component<IProps, any> {
         const selection: cleanSelection | undefined = this.props.selection;
         return (
             <div>
-                <Card onClick={this.toggle} className="ponter">
+                <Card onClick={this.toggle} className="pointer category-card">
                     <CardBody>
                         <div className="category-title">{title}</div>
                         <div className="d-flex justify-content-center">
@@ -101,6 +101,7 @@ export default class CategoryCard extends React.Component<IProps, any> {
                                     disabled />
                             }
                         </div>
+                        <div className="accent-line"></div>
                     </CardBody>
                 </Card>
                 <Collapse
@@ -110,7 +111,7 @@ export default class CategoryCard extends React.Component<IProps, any> {
                     onExiting={this.onExiting}
                     onExited={this.onExited}
                 >
-                    <Card>
+                    <Card className="category-entries">
                         <CardBody>
                             {
                                 this.props.children

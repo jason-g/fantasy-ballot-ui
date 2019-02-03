@@ -1,3 +1,4 @@
+import 'react-app-polyfill/ie9';
 import React, { Component } from 'react';
 import './App.css';
 import CategoryCard from './Category';
@@ -88,7 +89,7 @@ class App extends React.Component<AllProps> {
     if (selected && selected.entry_id == entry.entry_id) {
       return "Selected";
     }
-    return "Select " + entry.display_name;
+    return "Select";
   }
 
   isEntrySelected = (category_id: number, entry: Entry) => {
@@ -108,6 +109,7 @@ class App extends React.Component<AllProps> {
       this.props.dispatch({
         type: "@@user/ADD_TOKEN",
         user: JSON.stringify(objUser),
+        redirect: 'ballot',
       });
     }
   }
@@ -153,10 +155,9 @@ class App extends React.Component<AllProps> {
         <div>
           <Jumbotron fluid>
             <Container fluid>
-              <h1 className="display-3">91st Academy Awards</h1>
-              <p className="lead">Live on Sunday</p>
+              <h1 className="display-4">91st Academy Awards</h1>
               <hr className="my-2" />
-              <p>February 24th, 2019 at 8:00 Eastern Time</p>
+              <p>Live on Sunday February 24th, 2019 at 8:00 Eastern Time</p>
             </Container>
           </Jumbotron>
         </div>

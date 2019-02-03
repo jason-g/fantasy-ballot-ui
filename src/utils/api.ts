@@ -1,3 +1,5 @@
+import { Category } from "../store/categories/types";
+
 export async function callApi(method: string, url: string, path: string, data?: any) {
     //const res = await fetch(url + '/' + path, {
     const user: any = JSON.parse(localStorage.getItem('user') || '{}');
@@ -46,6 +48,32 @@ export async function makeSelection(category_id: number, entry_id: number, id: n
         });
         const body = await response.text();
         return (body);
+    }
+}
+
+export async function selectWinner(category: Category) {
+    const user: any = JSON.parse(localStorage.getItem('user') || '{}');
+    const token = user && user.id;
+    const category_id = category.category_id;
+    // ToDo: add admin check (will also be on server side)
+    if (!token) {
+        console.log('No user token present!');
+        return({});
+    }
+    if (category_id) {
+        const response = await fetch('/categories/'+category_id, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token,
+            },
+            body: JSON.stringify(category),
+        });
+        const body = await response.text();
+        return (body);
+    } else {
+        console.log ('Missing category ID?)');
+        return;
     }
 }
 

@@ -18,6 +18,7 @@ function* handleLogin(user: any) {
       let tmpUser = JSON.parse(res);
       tmpUser.username = user.username;
       yield put(loginSuccess(tmpUser));
+      console.log('login redirect');
       history.push('/ballot');
     }
   } catch (err) {
@@ -63,10 +64,13 @@ function* handleLogout() {
   }
 }
 
-function* handleAddToken() {
+function* handleAddToken(action: any) {
   yield call(isAuthenticated);
   //ToDo
-  history.push('/ballot');
+  console.log('addToken redirect: ' + action.redirect);
+  console.dir(action.redirect);
+  const redirect = (action.redirect)? action.redirect : '/ballot';
+  history.push(redirect);
 }
 
 function* watchLoginRequest() {

@@ -66,6 +66,9 @@ class Navigation extends React.Component<AllProps, myState> {
           <NavItem>
             <NavLink href="/results" active={this.props.state}>Results</NavLink>
           </NavItem>
+          <NavItem>
+            <NavLink href="/administration" active={this.props.state}>Administration</NavLink>
+          </NavItem>
           <Dropdown nav isOpen={this.state.dropdownOpen} toggle={this.toggle}>
             <DropdownToggle nav caret>
               <span className="userIcon fas fa-user-circle"></span>

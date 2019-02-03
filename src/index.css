@@ -6,7 +6,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #efece3 !important;
+  /*background-color: #efece3 !important;*/
 }
 
 code {
@@ -16,8 +16,15 @@ code {
 
 .jumbotron {
     background-color:#efece3 !important; 
+    background: -webkit-gradient(linear, 0 0, 100% 0, from(white), to(white), color-stop(50%, #efece3));
+    /* Opera 11.10+ */
+    background: -o-linear-gradient(top, white, #efece3);
+    /* Firefox 3.6+ */
+    background: -moz-linear-gradient(top, white, #efece3);
+    /* Newer Browsers */
+    background: linear-gradient(to bottom, white, #efece3);
 }
 
 .main-body {
-  padding-top: 55px;
+  padding-top: 42px;
 }

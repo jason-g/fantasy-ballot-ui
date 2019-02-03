@@ -3,6 +3,24 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: large;
 }
+.category-card {
+    border: 0px !important;
+}
+.category-entries {
+    border: 0px !important;
+}
+.accent-line { 
+    margin: 8px 0;
+    height: 3px;
+    background: #efece3;
+    background: -webkit-gradient(linear, 0 0, 100% 0, from(white), to(white), color-stop(50%, #efece3));
+    /* Opera 11.10+ */
+    background: -o-linear-gradient(top, white, #efece3);
+    /* Firefox 3.6+ */
+    background: -moz-linear-gradient(top, white, #efece3);
+    /* Newer Browsers */
+    background: linear-gradient(to bottom, white, #efece3);
+}
 .row {
     background-color: white;
 }
