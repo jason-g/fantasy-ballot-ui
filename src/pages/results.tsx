@@ -12,9 +12,7 @@ import ModalBody from 'reactstrap/lib/ModalBody';
 import { Redirect } from 'react-router';
 import { UserState } from '../store/user/types';
 import { GlobalsState } from '../store/globals/types';
-import FormGroup from 'reactstrap/lib/FormGroup';
-import Label from 'reactstrap/lib/Label';
-import CustomInput from 'reactstrap/lib/CustomInput';
+import { ResultsState } from '../store/results/types';
  
 const TITLE =  'Administration Page'
 
@@ -25,7 +23,8 @@ interface PropsFromState {
   selections: SelectionsState,
   user: UserState,
   globals: GlobalsState,
-};
+  results: ResultsState;
+}
 
 interface PropsFromDispatch {
   [key: string]: any,
@@ -36,6 +35,7 @@ interface OwnProps {
   selections: SelectionsState,
   user: UserState,
   globals: GlobalsState,
+  results: ResultsState,
 }
 type AllProps = PropsFromState & PropsFromDispatch & OwnProps;
 
@@ -45,9 +45,10 @@ const mapStateToProps = (state: PropsFromState): OwnProps => ({
   selections: state.selections,
   user: state.user,
   globals: state.globals,
+  results: state.results,
 })
 
-class Administration extends React.Component<AllProps> {
+class Results extends React.Component<AllProps> {
   state = {
       errors: null,
   }
@@ -64,19 +65,6 @@ class Administration extends React.Component<AllProps> {
     this.props.dispatch({
         type: "@@categories/SELECT_WINNER",
         category: category, 
-    })
-  };
-
-  updateGlobals = (e: any) => {
-    let value = e.target.checked;
-    let setting = e.target.name;
-    this.props.dispatch({
-        type: "@@globals/SET_GLOBALS",
-        globals: {
-          "setting": setting,
-          "value": value,
-          "id": 1,
-        },
     })
   };
 
@@ -117,7 +105,7 @@ class Administration extends React.Component<AllProps> {
         // ToDo: Move this to central auth component
         const { from } = this.props.location.state || { from: { pathname: '/' } };
         // const redirect = from.pathname;
-        const redirect = '/administration';
+        const redirect = '/results';
         // ToDo add verify on token in auth api call
         this.props.dispatch({
             type: "@@user/ADD_TOKEN",
@@ -151,10 +139,40 @@ class Administration extends React.Component<AllProps> {
     const entries = this.props.entries.data;
     const selections = this.props.selections.data;
     const globals = this.props.globals.data;
+    const results = this.props.results.data;
+    let isLocked = this.props.globals.data.map(
+      globalSetting => {
+        if (globalSetting.setting == 'isLocked') {
+          return globalSetting.value;
+        }
+      }
+    );
     if (this.state.errors) {
       return <p>Aw Snap - there was an error - hint: check the console</p>;
     }
 
+    if (!isLocked[0]) {
+      return (
+      <div className="App">
+        <div>
+          <Modal isOpen={this.isLoading()} className={this.props.className}>
+            <ModalBody>
+              Please wait a moment while we load things up...
+            </ModalBody>
+          </Modal>
+        </div>
+        <div>
+          <Jumbotron fluid>
+            <Container fluid>
+              <h1 className="display-4">91st Academy Awards</h1>
+              <hr className="my-2" />
+              <p>Live Results are not avaiable until all submissions are locked</p>
+            </Container>
+          </Jumbotron>
+        </div>
+      </div>
+      )
+    }
     return (
       <div className="App">
         <div>
@@ -165,71 +183,49 @@ class Administration extends React.Component<AllProps> {
           </Modal>
         </div>
         <div>
-          <form>
-            {
-              globals.map(globalSetting  => (
-                <FormGroup key={globalSetting.id}>
-                  <div>
-                    <CustomInput type="checkbox" 
-                      id={globalSetting.setting} 
-                      name={globalSetting.setting} 
-                      label={globalSetting.setting} 
-                      defaultChecked={(globalSetting.value == true)}
-                      onClick={this.updateGlobals.bind(this)}
-                      >
-                    </CustomInput>
-                  </div>
-                </FormGroup>
-              ))
-            }
-         </form>
-        </div>
-        <div>
           <Jumbotron fluid>
             <Container fluid>
               <h1 className="display-4">91st Academy Awards</h1>
               <hr className="my-2" />
-              <p>Live on Sunday February 24th, 2019 at 8:00 Eastern Time</p>
+              <p>Live Results</p>
             </Container>
           </Jumbotron>
         </div>
-        {
-          categories.map(category => (
-            <div className="container" key={category.category_id}>
-              <CategoryCard 
-                title={category.display_name} 
-                id={category.category_id}
-                selection={this.getSelection(category.category_id)}>
-                <div className="container">
-                  <div className="card-deck d-flex align-items-stretch row entry-cards">
-                  {
-                    entries.filter(entry => entry.category_id == category.category_id)
-                    .map((entry, index) => this.renderEntry(category, entry, index))
-                  }
+        <div>
+          {
+            this.props.results.data.map(category => (
+              <div className="container" key={category.category_id}>
+              <h1>{category.display_name}</h1>
+                  <div className="container">
+                    <div className="card-deck d-flex align-items-stretch row entry-cards">
+                      {
+                        <h2>{category.winners && category.winners.length}</h2>
+                      }
+                    </div>
                   </div>
-                </div>
-              </CategoryCard>
-            </div>
+              </div>
             ))
-        }
+          }
+        </div>
       </div>
     );
   }
 
+
   componentDidMount() {
-    console.log('In Admin');
     if (this.props.user.authenticated) {
       this.props.dispatch({
-        type: "@@categories/FETCH_REQUEST",
+        type: "@@globals/FETCH_GLOBALS",
+      })
+      console.log('In RESULT');
+      this.props.dispatch({
+        type: "@@results/FETCH_RESULTS",
       })
       this.props.dispatch({
         type: "@@entries/FETCH_REQUEST",
-      })
-      this.props.dispatch({
-        type: "@@globals/FETCH_GLOBALS",
       })
     }
   }
 }
 
-export default connect(mapStateToProps)(Administration);
+export default connect(mapStateToProps)(Results);

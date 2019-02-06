@@ -16,6 +16,12 @@ import userSaga from './user/sagas';
 import { navigationReducer } from './navigation/reducers';
 import { NavigationState } from './navigation/types';
 import navigationSaga from './navigation/sagas';
+import { globalsReducer } from './globals/reducers';
+import { GlobalsState } from './globals/types';
+import globalsSaga from './globals/sagas';
+import { resultsReducer } from './results/reducers';
+import { ResultsState } from './results/types';
+import resultsSaga from './results/sagas';
 
 // The top-level state object
 export interface ApplicationState {
@@ -24,6 +30,8 @@ export interface ApplicationState {
   selections: SelectionsState,
   user: UserState,
   navigation: NavigationState,
+  globals: GlobalsState,
+  results: ResultsState,
 }
 
 // Additional props for connected React components. This prop is passed by default with `connect()`
@@ -37,8 +45,10 @@ export const rootReducer = combineReducers<ApplicationState>({
   selections: selectionsReducer,
   user: userReducer,
   navigation: navigationReducer,
+  globals: globalsReducer,
+  results: resultsReducer,
 })
 
 export function* rootSaga() {
-  yield all([fork(categoriesSaga), fork(entriesSaga), fork(selectionsSaga), fork(userSaga), fork(navigationSaga)])
+  yield all([fork(categoriesSaga), fork(entriesSaga), fork(selectionsSaga), fork(userSaga), fork(navigationSaga), fork(globalsSaga), fork(resultsSaga)])
 }

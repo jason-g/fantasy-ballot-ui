@@ -12,6 +12,7 @@ import ModalBody from 'reactstrap/lib/ModalBody';
 import EntryCard from './Entry';
 import { Redirect } from 'react-router';
 import { UserState } from './store/user/types';
+import { GlobalsState } from './store/globals/types';
  
 const TITLE =  'Ballot Time'
 
@@ -21,6 +22,7 @@ interface PropsFromState {
   entries: EntriesState,
   selections: SelectionsState,
   user: UserState,
+  globals: GlobalsState,
 };
 
 interface PropsFromDispatch {
@@ -31,6 +33,7 @@ interface OwnProps {
   entries: EntriesState,
   selections: SelectionsState,
   user: UserState,
+  globals: GlobalsState,
 }
 type AllProps = PropsFromState & PropsFromDispatch & OwnProps;
 
@@ -39,6 +42,7 @@ const mapStateToProps = (state: PropsFromState): OwnProps => ({
   entries: state.entries,
   selections: state.selections,
   user: state.user,
+  globals: state.globals,
 })
 
 class App extends React.Component<AllProps> {
@@ -115,16 +119,27 @@ class App extends React.Component<AllProps> {
   }
 
   renderEntry = (category: Category, entry: Entry, index: number) => {
+    let isLocked = this.props.globals.data.map(
+      globalSetting => {
+        if (globalSetting.setting == 'isLocked') {
+          return globalSetting.value;
+        }
+      }
+    );
+    //debugger;
+    //console.log(isLocked + "<-----");
     return (
       <EntryCard key={entry.entry_id}
         selected={this.isEntrySelected(category.category_id, entry)}
         entry={entry}>
-        <Button onClick={this.updatePick.bind(this)}
-          className="mt-auto entry-button"
-          data-entry={entry.entry_id}
-          data-category={entry.category_id}>
-          {this.getEntryLabel(category.category_id, entry)}
-        </Button>
+        { (isLocked && (isLocked[0] == true))? null : (
+          <Button onClick={this.updatePick.bind(this)}
+            className="mt-auto entry-button"
+            data-entry={entry.entry_id}
+            data-category={entry.category_id}>
+            {this.getEntryLabel(category.category_id, entry)}
+          </Button>
+          )}
       </EntryCard>
     );
   }
@@ -139,6 +154,7 @@ class App extends React.Component<AllProps> {
     const categories = this.props.categories.data;
     const entries = this.props.entries.data;
     const selections = this.props.selections.data;
+    const globals = this.props.globals.data;
     if (this.state.errors) {
       return <p>Aw Snap - there was an error - hint: check the console</p>;
     }
@@ -185,15 +201,21 @@ class App extends React.Component<AllProps> {
   }
 
   componentDidMount() {
-    this.props.dispatch({
-      type: "@@categories/FETCH_REQUEST",
-    })
-    this.props.dispatch({
-      type: "@@entries/FETCH_REQUEST",
-    })
-    this.props.dispatch({
-      type: "@@selections/FETCH_REQUEST",
-    })
+    console.log('In App');
+    if (this.props.user.authenticated) {
+      this.props.dispatch({
+        type: "@@globals/FETCH_GLOBALS",
+      })
+      this.props.dispatch({
+        type: "@@categories/FETCH_REQUEST",
+      })
+      this.props.dispatch({
+        type: "@@entries/FETCH_REQUEST",
+      })
+      this.props.dispatch({
+        type: "@@selections/FETCH_REQUEST",
+      })
+    }
   }
 }
 

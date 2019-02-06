@@ -36,6 +36,11 @@ class BallotProgress extends React.Component<AllProps, myState> {
         }
     }
     render() {
+        if (!this.props.selections.data || !this.props.categories.data) {
+            return (
+                <div></div
+            >);
+        }
         let selected = this.props.selections.data.length
         const total = this.props.categories.data.length; // todo count of categories
         if (!this.props.user.authenticated) {

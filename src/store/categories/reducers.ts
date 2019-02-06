@@ -18,6 +18,9 @@ const reducer: Reducer<CategoriesState> = (state = initialState, action) => {
     case CategoriesActionTypes.FETCH_ERROR: {
       return { ...state, loading: false, errors: action.payload }
     }
+    case CategoriesActionTypes.SELECT_WINNER: {
+      return { ...state, loading: false }
+    }
     default: {
       return state
     }

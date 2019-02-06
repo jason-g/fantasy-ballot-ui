@@ -19,6 +19,7 @@ import Navigation from './components/navigation';
 import Progress from 'reactstrap/lib/Progress';
 import BallotProgress from './components/progress';
 import administration from './pages/administration';
+import results from './pages/results';
 
 const store = configureStore();
 
@@ -34,7 +35,8 @@ ReactDOM.render(
         <Route path="/ballot" key="2" component={App} />
         <Route path="/login" exact key="3" component={Login} />
         <Route path="/logout" exact key="4" component={Logout} />
-        <Route path="/administration" exact key="5" component={administration} />
+        <Route path="/results" exact key="5" component={results} />
+        <Route path="/administration" exact key="6" component={administration} />
       </div>
     </Router>
   </Provider>,

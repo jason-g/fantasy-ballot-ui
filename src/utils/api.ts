@@ -1,4 +1,5 @@
 import { Category } from "../store/categories/types";
+import { Global } from "../store/globals/types";
 
 export async function callApi(method: string, url: string, path: string, data?: any) {
     //const res = await fetch(url + '/' + path, {
@@ -73,6 +74,32 @@ export async function selectWinner(category: Category) {
         return (body);
     } else {
         console.log ('Missing category ID?)');
+        return;
+    }
+}
+
+export async function saveGlobals(action: any) {
+    const globals = action.globals;
+    const user: any = JSON.parse(localStorage.getItem('user') || '{}');
+    const token = user && user.id;
+    // ToDo: add admin check (will also be on server side)
+    if (!token) {
+        console.log('No user token present!');
+        return({});
+    }
+    if (globals) {
+        const response = await fetch('/globals/', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token,
+            },
+            body: JSON.stringify(globals),
+        });
+        const body = await response.text();
+        return (body);
+    } else {
+        console.log ('Missing Globals?)');
         return;
     }
 }
