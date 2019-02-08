@@ -3,6 +3,7 @@ export interface Selection {
   category_id: number,
   entry_id: number,
   user_id?: number,
+  username?: string,
 }
 
 export enum SelectionsActionTypes {

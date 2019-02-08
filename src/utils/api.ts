@@ -55,14 +55,14 @@ export async function makeSelection(category_id: number, entry_id: number, id: n
 export async function selectWinner(category: Category) {
     const user: any = JSON.parse(localStorage.getItem('user') || '{}');
     const token = user && user.id;
-    const category_id = category.category_id;
+    const dbid = category.id;
     // ToDo: add admin check (will also be on server side)
     if (!token) {
         console.log('No user token present!');
         return({});
     }
-    if (category_id) {
-        const response = await fetch('/categories/'+category_id, {
+    if (dbid) {
+        const response = await fetch('/categories/'+dbid, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -105,15 +105,28 @@ export async function saveGlobals(action: any) {
 }
 
 export async function callLogin(username: string, password: string) {
-    const response = await fetch('/Users/login', {
+    let response = await fetch('/People/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ "username": username, "password": password }),
     });
-    const body = await response.text();
-    return (body);
+    const loginResponse = await response.text();
+    let userModel = JSON.parse(loginResponse);
+    userModel.roles = [];
+    let fooresponse = await fetch('/People/' + userModel.userId + '/roles/', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    const userResponse = await fooresponse.text();
+    const tmpUser = JSON.parse(userResponse);
+    userModel.roles = tmpUser.map((userObj: any) => {
+      return userObj.name;  
+    })
+    return (JSON.stringify(userModel));
 }
 
 export async function callLogout() {
@@ -123,7 +136,7 @@ export async function callLogout() {
         console.log('No user token present!');
         return({});
     }
-    const response = await fetch('/Users/logout', {
+    const response = await fetch('/People/logout', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -136,7 +149,7 @@ export async function callLogout() {
 }
 
 export async function callSignup(username: string, password: string, email: string) {
-    const response = await fetch('/Users', {
+    const response = await fetch('/People', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

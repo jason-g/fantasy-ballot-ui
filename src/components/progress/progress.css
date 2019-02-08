@@ -2,3 +2,7 @@
     height: 42px;
     padding: 12px;
 }
+.bg-warning {
+    background: radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #e6c37d 8%, #c5ab73 30%, #EDD192 40%, transparent 80%),
+                radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #ebd495 25%, #5d4a1f 62.5%, #5d4a1f 100%) !important;
+}

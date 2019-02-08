@@ -3,7 +3,6 @@ export async function isAuthenticated() {
     const user: any = JSON.parse(localStorage.getItem('user') || '{}');
     const token = user && user.id;
     if (!token) {
-        console.dir(user);
         console.log('No user token present!');
        return false;
     }

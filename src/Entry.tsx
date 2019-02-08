@@ -37,12 +37,14 @@ export default class EntryCard extends React.Component<IProps> {
                       className="mh-50 round-img"
                       alt={"Image for" + entry.display_name} />
               </div>
-              <CardBody className="">
-                  <span>
-                      <CardSubtitle>{entry.display_content}</CardSubtitle>
+              <CardBody>
+                  <span className="text-center">
+                      <CardText>
+                          {entry.display_content}
+                      </CardText>
                   </span>
                   <span>
-                      <CardText>
+                      <CardText className="card-link">
                           <a href={entry.featured_video} target="_blank">View trailer...</a>
                       </CardText>
                   </span>

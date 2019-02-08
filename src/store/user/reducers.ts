@@ -10,6 +10,7 @@ const initialState: UserState = {
     userId: (user)? JSON.parse(user).userId :  null,
     authenticated: false,
     username: '',
+    roles: [],
 }
 
 const reducer: Reducer<UserState> = (state = initialState, action) => {
@@ -26,6 +27,7 @@ const reducer: Reducer<UserState> = (state = initialState, action) => {
                 token: null,
                 userId: null,
                 username: '',
+                roles: [],
                 authenticated: false,
             }
         }
@@ -41,6 +43,7 @@ const reducer: Reducer<UserState> = (state = initialState, action) => {
                 token: action.payload.token,
                 id: action.payload.id,
                 userId: action.payload.userId,
+                roles: action.payload.roles,
                 username: action.payload.username,
             }
         }
@@ -54,6 +57,7 @@ const reducer: Reducer<UserState> = (state = initialState, action) => {
                 token: user.token,
                 id: user.id,
                 userId: user.userId,
+                roles: user.roles,
                 username: user.username,
             }
         }

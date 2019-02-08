@@ -17,15 +17,13 @@ export type WinnerType = {
 }
 
 export type ByCategoryType = {
-    category_id?: number,
-    display_name?: string,
-    dislay_content? : string,
-    winners?: WinnerType[],
+    labels: string[],
+    data: number[],
 }
 
 export interface Results extends ApiResponse {
-  byCategory: ByCategoryType[],
-  byUser: ByUserType[],
+  byCategory: any,
+  byUser: any,
 };
 
 export type ApiResponse = Record<string, any>
@@ -39,6 +37,6 @@ export enum ResultsActionTypes {
 
 export interface ResultsState {
   readonly loading: boolean,
-  readonly data: Results[],
+  readonly data?: Results,
   readonly errors?: string,
 }

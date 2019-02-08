@@ -54,6 +54,14 @@ class Navigation extends React.Component<AllProps, myState> {
   }
 
   render() {
+    const isAdmin = this.props.user.roles && this.props.user.roles.includes('admin');
+    let loginMenu;
+
+    if (isAdmin) {
+      loginMenu = <NavItem>
+          <NavLink href="/administration" active={this.props.state}>Administration</NavLink>
+        </NavItem>;
+    }
     if (this.state.redirect && this.state.redirect != '') {
       return <Redirect to={this.state.redirect} />
     }
@@ -66,9 +74,7 @@ class Navigation extends React.Component<AllProps, myState> {
           <NavItem>
             <NavLink href="/results" active={this.props.state}>Results</NavLink>
           </NavItem>
-          <NavItem>
-            <NavLink href="/administration" active={this.props.state}>Administration</NavLink>
-          </NavItem>
+          {loginMenu}
           <Dropdown nav isOpen={this.state.dropdownOpen} toggle={this.toggle}>
             <DropdownToggle nav caret>
               <span className="userIcon fas fa-user-circle"></span>
@@ -76,11 +82,11 @@ class Navigation extends React.Component<AllProps, myState> {
             </DropdownToggle>
             <DropdownMenu>
               <DropdownItem header>Account</DropdownItem>
-              <DropdownItem disabled={!this.props.user.authenticated}>
-                 <div onClick={this.doLogout}>Edit account</div>
+              <DropdownItem onClick={this.doLogout} disabled={!this.props.user.authenticated}>
+                 Edit accout
               </DropdownItem>
-              <DropdownItem disabled={!this.props.user.authenticated}>
-                <div onClick={this.doLogout}>Logout</div>
+              <DropdownItem onClick={this.doLogout} disabled={!this.props.user.authenticated}>
+                Logout
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>

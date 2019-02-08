@@ -217,7 +217,6 @@ class Administration extends React.Component<AllProps> {
   }
 
   componentDidMount() {
-    console.log('In Admin');
     if (this.props.user.authenticated) {
       this.props.dispatch({
         type: "@@categories/FETCH_REQUEST",

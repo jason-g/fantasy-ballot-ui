@@ -1,11 +1,12 @@
 import { Reducer } from 'redux';
 import { ResultsState, ResultsActionTypes } from './types';
 
+
 const initialState: ResultsState = {
-  data: [],
   errors: undefined,
   loading: false
 }
+
 
 
 const reducer: Reducer<ResultsState> = (state = initialState, action) => {

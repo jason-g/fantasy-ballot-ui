@@ -126,13 +126,12 @@ class App extends React.Component<AllProps> {
         }
       }
     );
-    //debugger;
-    //console.log(isLocked + "<-----");
+    const isSelected = this.isEntrySelected(category.category_id, entry);
     return (
       <EntryCard key={entry.entry_id}
-        selected={this.isEntrySelected(category.category_id, entry)}
+        selected={isSelected}
         entry={entry}>
-        { (isLocked && (isLocked[0] == true))? null : (
+        { (isLocked && (isLocked[0] == true) || isSelected)? null : (
           <Button onClick={this.updatePick.bind(this)}
             className="mt-auto entry-button"
             data-entry={entry.entry_id}
@@ -201,7 +200,6 @@ class App extends React.Component<AllProps> {
   }
 
   componentDidMount() {
-    console.log('In App');
     if (this.props.user.authenticated) {
       this.props.dispatch({
         type: "@@globals/FETCH_GLOBALS",

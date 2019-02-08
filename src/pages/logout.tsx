@@ -28,6 +28,7 @@ class Logout extends React.Component<PropsFromDispatch, myState> {
     }
 
     doLogout() {
+        debugger;
         this.props.dispatch(
             {
                 type: "@@user/LOGOUT",

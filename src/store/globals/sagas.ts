@@ -6,7 +6,6 @@ import { callApi, saveGlobals } from '../../utils/api'
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT || ''
 
 function* handleFetch() {
-  console.log('handle fetch of globals');
   try {
     const res = yield call(callApi, 'get', API_ENDPOINT, '/globals')
 

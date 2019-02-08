@@ -48,8 +48,8 @@ export default class CategoryCard extends React.Component<IProps, any> {
         this.onExited = this.onExited.bind(this);
         this.toggle = this.toggle.bind(this);
         this.state = {
-            collapse: false,
-            status: 'Closed',
+            collapse: true,
+            status: 'Opened',
             selection: (props.selection) ? props.selection : undefined,
             selection_name: (props.selection_name) ? props.selection_name : undefined,
         };
@@ -83,22 +83,19 @@ export default class CategoryCard extends React.Component<IProps, any> {
             <div>
                 <Card onClick={this.toggle} className="pointer category-card">
                     <CardBody>
-                        <div className="category-title">{title}</div>
+                        <div className="category-title">
+                        <span className="btn btn-category btn-outline-warning">
+                            {title}
+                        </span>
+                        </div>
                         <div className="d-flex justify-content-center">
                             {selection !== undefined &&
-                                <CustomInput
-                                    type="checkbox"
-                                    id={"picked_" + id}
-                                    label={title + " : " + selection.entry_name}
-                                    checked
-                                    disabled />
+                                <span>
+                                    Selected: {selection.entry_name}
+                                </span>
                             }
                             {selection == undefined &&
-                                <CustomInput
-                                    type="checkbox"
-                                    id={"notpicked_" + id}
-                                    label={title + " not yet picked"}
-                                    disabled />
+                                <span>Not yet selected</span>
                             }
                         </div>
                         <div className="accent-line"></div>

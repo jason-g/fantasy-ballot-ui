@@ -9,6 +9,11 @@
 .category-entries {
     border: 0px !important;
 }
+.btn-category {
+    color: black !important;
+    border-left: 0px !important;
+    border-right: 0px !important;
+}
 .accent-line { 
     margin: 8px 0;
     height: 3px;

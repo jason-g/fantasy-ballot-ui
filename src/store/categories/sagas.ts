@@ -25,10 +25,10 @@ function* handleFetch() {
 
 function* handleSelectWinner(action: any) {
   const category = action.category;
+  const dbid = category.id;
   let category_id = category.category_id;
   let winner_id = category.winner;
-  console.dir(category);
-  if (!category_id || !winner_id) {
+  if (!category_id || !dbid || !winner_id) {
     // missing setdata
     console.log('invalid winner selection');
     return; 

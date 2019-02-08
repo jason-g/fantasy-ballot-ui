@@ -4,6 +4,7 @@ export interface User {
   userId?: number | null,
   username?: string,
   password?: string,
+  roles?: string[],
   authenticated: boolean,
 }
 
@@ -25,5 +26,6 @@ export interface UserState {
   readonly userId: number | null,
   readonly authenticated: boolean,
   readonly username: string,
+  readonly roles: string[],
   readonly message?: any,
 }

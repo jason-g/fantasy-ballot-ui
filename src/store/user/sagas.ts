@@ -67,8 +67,8 @@ function* handleLogout() {
 function* handleAddToken(action: any) {
   yield call(isAuthenticated);
   //ToDo
-  console.log('addToken redirect: ' + action.redirect);
-  console.dir(action.redirect);
+  //console.log('addToken redirect: ' + action.redirect);
+  //console.dir(action.redirect);
   const redirect = (action.redirect)? action.redirect : '/ballot';
   history.push(redirect);
 }

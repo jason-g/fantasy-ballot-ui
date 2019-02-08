@@ -12,7 +12,8 @@ import ModalBody from 'reactstrap/lib/ModalBody';
 import { Redirect } from 'react-router';
 import { UserState } from '../store/user/types';
 import { GlobalsState } from '../store/globals/types';
-import { ResultsState } from '../store/results/types';
+import { ResultsState, ByCategoryType } from '../store/results/types';
+import {Bar, HorizontalBar} from 'react-chartjs-2';
  
 const TITLE =  'Administration Page'
 
@@ -115,6 +116,32 @@ class Results extends React.Component<AllProps> {
     }
   }
 
+  sortProperties = (obj: any, sortedBy: any, isNumericSort: boolean, reverse: boolean) => {
+    sortedBy = sortedBy || 1; // by default first key
+    isNumericSort = isNumericSort || false; // by default text sort
+    reverse = reverse || false; // by default no reverse
+
+    var reversed = (reverse) ? -1 : 1;
+
+    var sortable = [];
+    for (var key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        sortable.push([key, obj[key]]);
+      }
+    }
+    if (isNumericSort)
+      sortable.sort(function (a, b) {
+        return reversed * (a[1][sortedBy] - b[1][sortedBy]);
+      });
+    else
+      sortable.sort(function (a, b) {
+        var x = a[1][sortedBy].toLowerCase(),
+          y = b[1][sortedBy].toLowerCase();
+        return x < y ? reversed * -1 : x > y ? reversed : 0;
+      });
+    return sortable; // array in format [ [ key1, val1 ], [ key2, val2 ], ... ]
+  }
+
   renderEntry = (category: Category, entry: Entry, index: number) => {
     return (
       <div  key={entry.entry_id}>
@@ -135,11 +162,7 @@ class Results extends React.Component<AllProps> {
       return <Redirect to='/login' />;
     }
     // get the state
-    const categories = this.props.categories.data;
-    const entries = this.props.entries.data;
-    const selections = this.props.selections.data;
-    const globals = this.props.globals.data;
-    const results = this.props.results.data;
+    let results = this.props.results.data;
     let isLocked = this.props.globals.data.map(
       globalSetting => {
         if (globalSetting.setting == 'isLocked') {
@@ -173,6 +196,53 @@ class Results extends React.Component<AllProps> {
       </div>
       )
     }
+    let data: any[] = [];
+    if (!results) {
+      return (
+        <div>No results available yet ... please check back soon.</div>
+      );
+    }
+    let categoryData = results.byCategory;
+    let byCategoryResults = {
+      labels: categoryData.labels,
+      datasets: [
+        {
+          label: 'Winners per category',
+          height: 200,
+          width: 600,
+          backgroundColor: 'rgba(239, 197, 113, 0.6)',
+          borderColor: 'rgba(239, 197, 113, 1)',
+          borderWidth: 1,
+          hoverBackgroundColor: 'rgba(199, 21, 133, 0.6)',
+          hoverBorderColor: 'rgba(199, 21, 133, 1)',
+          data: categoryData.data,
+        }
+      ]
+    };
+    let userData = results.byUser;
+    console.log('1:',userData);
+    let userdata = this.sortProperties(userData, 'data', true, true)
+    //let userdata = userData.sort(function (a: any, b: any) {
+    //  return b.data - a.data;
+    ///});
+    console.log('2:',userdata);
+    let byUserResults = {
+      labels: userData.labels,
+      datasets: [
+        {
+          label: 'The Leaders board',
+          height: 200,
+          width: 600,
+          backgroundColor: 'rgba(199, 21, 133, 0.6)',
+          borderColor: 'rgba(199, 21, 133,1)',
+          borderWidth: 1,
+          hoverBackgroundColor: 'rgba(239, 197, 113, 0.6)',
+          hoverBorderColor: 'rgba(239, 197, 113, 1)',
+          data: userData.data,
+        }
+      ],
+      
+    };
     return (
       <div className="App">
         <div>
@@ -192,21 +262,64 @@ class Results extends React.Component<AllProps> {
           </Jumbotron>
         </div>
         <div>
-          {
-            this.props.results.data.map(category => (
-              <div className="container" key={category.category_id}>
-              <h1>{category.display_name}</h1>
-                  <div className="container">
-                    <div className="card-deck d-flex align-items-stretch row entry-cards">
-                      {
-                        <h2>{category.winners && category.winners.length}</h2>
-                      }
-                    </div>
-                  </div>
-              </div>
-            ))
-          }
+          <HorizontalBar data={byUserResults}
+            width={100}
+            height={500}
+            options={{
+              maintainAspectRatio: false,
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    min: 0,
+                    stepSize: 1,
+                  },
+                  gridLines: {
+                    display: false,
+                  }
+                }],
+                xAxes: [{
+                  ticks: {
+                    min: 0,
+                    stepSize: 1,
+                  },
+                  gridLines: {
+                    display: false,
+                  }
+                }],
+              },
+            }}
+        />
         </div>
+        <div>
+          <Bar data={byCategoryResults}
+            width={100}
+            height={500}
+            options={{
+              maintainAspectRatio: false,
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    min: 0,
+                    stepSize: 1,
+                  },
+                  gridLines: {
+                    display: false,
+                  }
+                }],
+                xAxes: [{
+                  ticks: {
+                    min: 0,
+                    stepSize: 1,
+                  },
+                  gridLines: {
+                    display: false,
+                  }
+                }],
+              },
+            }}
+          />
+        </div>
+        
       </div>
     );
   }
@@ -217,7 +330,6 @@ class Results extends React.Component<AllProps> {
       this.props.dispatch({
         type: "@@globals/FETCH_GLOBALS",
       })
-      console.log('In RESULT');
       this.props.dispatch({
         type: "@@results/FETCH_RESULTS",
       })
