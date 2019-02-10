@@ -44,13 +44,6 @@ class Navigation extends React.Component<AllProps, myState> {
     this.props.dispatch({
       type: "@@user/LOGOUT",
     })
-    /*this.setState({
-      redirect: '/login'
-    })
-    this.props.dispatch({
-      type: "@@navigation/NAVIGATE",
-      page: "/login"
-    })*/
   }
 
   render() {
@@ -82,7 +75,7 @@ class Navigation extends React.Component<AllProps, myState> {
             </DropdownToggle>
             <DropdownMenu>
               <DropdownItem header>Account</DropdownItem>
-              <DropdownItem onClick={this.doLogout} disabled={!this.props.user.authenticated}>
+              <DropdownItem href="/editUser" disabled={!this.props.user.authenticated}>
                  Edit accout
               </DropdownItem>
               <DropdownItem onClick={this.doLogout} disabled={!this.props.user.authenticated}>

@@ -4,6 +4,7 @@ export interface User {
   userId?: number | null,
   username?: string,
   password?: string,
+  email?: string,
   roles?: string[],
   authenticated: boolean,
 }
@@ -16,6 +17,8 @@ export enum UserActionTypes {
   SIGNUP = '@@user/SIGNUP',
   SIGNUP_SUCCESS = '@@user/SIGNUP_SUCCESS',
   LOGIN_ERROR = '@@user/LOGIN_ERROR',
+  RESET_PASSWORD = '@@user/RESET_PASSWORD',
+  REQUEST_CHANGE = '@@user/REQUEST_CHANGE',
   ERROR = '@@user/ERROR',
   ADD_TOKEN = '@@user/ADD_TOKEN',
 }
@@ -24,8 +27,10 @@ export interface UserState {
   readonly id: number | null,
   readonly token: string | null,
   readonly userId: number | null,
+  readonly email?: string | null,
   readonly authenticated: boolean,
   readonly username: string,
+  readonly password?: string,
   readonly roles: string[],
   readonly message?: any,
 }

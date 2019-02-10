@@ -126,19 +126,17 @@ class Signup extends React.Component<AllProps, myState> {
                         <Input name="username" id="username" onChange={this.handleChange.bind(this)} />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="signupEmail">Email</Label>
+                        <Label for="signupEmail">Email (used to reset password)</Label>
                         <Input type="email" name="email"
                             id="signupEmail" placeholder="email address"
                             valid={this.state.validate.emailState === 'has-success'}
                             invalid={this.state.validate.emailState === 'has-danger'}
-                            onChange={
-                                this.handleChange
-                            } />
+                            onChange={ this.handleChange } />
                     </FormGroup>
                     <FormGroup>
                         <Label for="signupPassword">Password</Label>
                         <Input type="password" name="password"
-                            id="signupPassword" placeholder="password" onChange={this.handleChange.bind(this)} />
+                            id="signupPassword" placeholder="password" onChange={this.handleChange} />
                     </FormGroup>
                     <Button type="submit" onClick={this.handleSubmit.bind(this)}>Sign up</Button>
                 </Form>

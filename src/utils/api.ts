@@ -159,3 +159,47 @@ export async function callSignup(username: string, password: string, email: stri
     const body = await response.text();
     return (body);
 }
+
+export async function callResetPassword(token: any, password: string) {
+    const response = await fetch('/People/reset-password', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token,
+        },
+        body: JSON.stringify({ "newPassword": password }),
+    });
+    const body = await response.text();
+    return (body);
+}
+
+export async function callRequestChange(email: string) {
+    const response = await fetch('/People/reset', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ "email": email}),
+    });
+    const body = await response.text();
+    return (body);
+}
+
+export async function callEditUser(userid: number, username: string, password: string, email: string) {
+    const user: any = JSON.parse(localStorage.getItem('user') || '{}');
+    const token = user && user.id;
+    if (!token) {
+        console.log('No user token present!');
+        return({});
+    }
+    const response = await fetch('/People/' + userid, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token,
+        },
+        body: JSON.stringify({ "username": username, "password": password, "email": email }),
+    });
+    const body = await response.text();
+    return (body);
+}

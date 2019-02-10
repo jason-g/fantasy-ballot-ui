@@ -16,7 +16,7 @@ interface IProps {
 
 export default class EntryCard extends React.Component<IProps> {
   getClassNames = () => {
-      let classname = 'entry-card d-flex justify-content-center mb-4';
+      let classname = 'entry-card d-flex justify-content-center mb-5 shadow p-3 bg-white rounded';
       if (this.props.selected) {
         classname = classname + ' entry-card-selected'
       }
@@ -24,6 +24,7 @@ export default class EntryCard extends React.Component<IProps> {
   }
   public render () {
     const entry: Entry = this.props.entry;
+    let hasImage = (entry.featured_image && entry.featured_image !=='images/xxx.png')
       return (
           <Card className={this.getClassNames()}>
               <CardBody className="">
@@ -31,11 +32,13 @@ export default class EntryCard extends React.Component<IProps> {
                       <CardTitle>{entry.display_name}</CardTitle>
                   </span>
               </CardBody>
-              <div className="text-center">
+              <div className="text-center"> {!hasImage? '' : 
+
                   <CardImg top width="100%"
                       src={entry.featured_image}
                       className="mh-50 round-img"
                       alt={"Image for" + entry.display_name} />
+              }
               </div>
               <CardBody>
                   <span className="text-center">

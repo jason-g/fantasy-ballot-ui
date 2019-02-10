@@ -97,8 +97,11 @@
     .entry-card {
         min-width: calc(33% - 1em);
     }
+    .card-title {
+        font-size: larger;
+    }
     .card-body {
-       font-size: larger; 
+       font-size: small; 
     }
 }
 

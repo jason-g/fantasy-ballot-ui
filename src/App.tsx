@@ -108,6 +108,9 @@ class App extends React.Component<AllProps> {
     const tmpUser = localStorage.getItem('user');
     if (tmpUser) {
       let objUser = JSON.parse(tmpUser);
+      if (typeof objUser !== 'object') {
+        return;
+      }
       objUser.username = localStorage.getItem('username') || 'Unknown User';
       //ToDo add verify on token in auth api call
       this.props.dispatch({

@@ -8,44 +8,41 @@ import { withRouter, Redirect, Link } from 'react-router-dom';
 import { isAuthenticated } from '../utils/auth';
 import Alert from 'reactstrap/lib/Alert';
 import { UserState } from '../store/user/types';
+import queryString from 'query-string';
+
 
 interface PropsFromDispatch {
     [key: string]: any,
 };
 interface myState {
-    username: string,
+    token: any,
     password: string,
-    realm?: string,
-    redirect?: string,
-    user: UserState,
 }
 interface PropsFromState {
-    user: UserState,
+    
 };
 interface OwnProps {
 }
 type AllProps = PropsFromState & PropsFromDispatch & OwnProps;
 
-class Login extends React.Component<AllProps, myState> {
+class ResetPassword extends React.Component<AllProps, myState> {
     constructor(props: any) {
         super(props);
+        const parsed = queryString.parse(props.location.search);
         this.state = {
-            username: '',
             password: '',
-            realm: 'ritas house',
-            redirect: '',
-            user: this.props.user,
+            token: parsed.access_token || '',
         };
     }
 
     handleSubmit(event: any): void {
         event.preventDefault();
-        let username = this.state.username;
+        let token = this.state.token;
         let password = this.state.password;
         this.props.dispatch(
             {
-                type: "@@user/LOGIN",
-                username: username,
+                type: "@@user/RESET_PASSWORD",
+                token: token,
                 password: password
             }
         )
@@ -56,10 +53,6 @@ class Login extends React.Component<AllProps, myState> {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const { name } = target;
         switch (name) {
-            case 'username': {
-                this.setState({ username: value })
-                break;
-            }
             case 'password': {
                 this.setState({ password: value })
                 break;
@@ -70,54 +63,26 @@ class Login extends React.Component<AllProps, myState> {
         }
     }
 
-    showMessage() {
-        if (!this.props.user) {
-            return;
-        }
-        if (this.props.user.message && this.props.user.message.error) {
-            return (
-                <Alert color="danger">
-                    Authentication error! <br />Looks like that is either the wrong username or password.
-                </Alert>
-            )
-        }
-    }
-
     render() {
         return (
             <Container className="Login">
-                <h2>Sign In</h2>
-                {this.showMessage()}
+                <h2>Reset your password</h2>
                 <Form>
                     <Col>
                         <FormGroup>
-                            <Label for="loginText">Username</Label>
-                            <Input name="username" id="username" onChange={this.handleChange.bind(this)} />
-                        </FormGroup>
-                    </Col>
-                    <Col>
-                        <FormGroup>
-                            <Label for="loginPassword">Password</Label>
+                            <Label for="loginPassword">New password</Label>
                             <Input type="password" name="password"
                                 id="loginPassword" placeholder="password" onChange={this.handleChange.bind(this)} />
                         </FormGroup>
                     </Col>
-                    <Button type="submit" onClick={this.handleSubmit.bind(this)}>Sign in</Button>
+                    <Button type="submit" onClick={this.handleSubmit.bind(this)}>Reset password</Button>
                 </Form>
-                <span>
-                    Don't have an account yet?  <Link to="/signup">Sign up for an account</Link>
-                </span>
-                <br></br>
-                <span>
-                    Forgot your password? <Link to="/request-change">reset password</Link>
-                </span>
             </Container>
         );
     }
 }
 
 const mapStateToProps = (state: PropsFromState): OwnProps => ({
-  user: state.user,
 })
 
-export default connect(mapStateToProps)(Login);
+export default connect(mapStateToProps)(ResetPassword);

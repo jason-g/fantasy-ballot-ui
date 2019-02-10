@@ -27,8 +27,9 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ## ToDos
 - [x] Create Category component 
-- [ ] Create progress component
-- [ ] Add Redux state mgmt
-- [ ] hook in user objects
-- [ ] wire in auth/login
+- [x] Create progress component
+- [x] Add Redux state mgmt
+- [x] hook in user objects
+- [/] wire in auth/login
 - [ ] Add message board
+- [ ] code cleanup

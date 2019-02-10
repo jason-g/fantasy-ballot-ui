@@ -116,30 +116,19 @@ class Results extends React.Component<AllProps> {
     }
   }
 
-  sortProperties = (obj: any, sortedBy: any, isNumericSort: boolean, reverse: boolean) => {
-    sortedBy = sortedBy || 1; // by default first key
-    isNumericSort = isNumericSort || false; // by default text sort
-    reverse = reverse || false; // by default no reverse
-
-    var reversed = (reverse) ? -1 : 1;
-
-    var sortable = [];
-    for (var key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        sortable.push([key, obj[key]]);
-      }
+  sortProperties = (names: any, data: number[], reverse: boolean) => {
+    const reversed = (reverse) ? -1 : 1;
+    let list = [];
+    for (let j = 0; j < names.length; j++) {
+      list.push({'user': names[j], 'data': data[j]});
     }
-    if (isNumericSort)
-      sortable.sort(function (a, b) {
-        return reversed * (a[1][sortedBy] - b[1][sortedBy]);
-      });
-    else
-      sortable.sort(function (a, b) {
-        var x = a[1][sortedBy].toLowerCase(),
-          y = b[1][sortedBy].toLowerCase();
-        return x < y ? reversed * -1 : x > y ? reversed : 0;
-      });
-    return sortable; // array in format [ [ key1, val1 ], [ key2, val2 ], ... ]
+    list.sort(function(a, b) {
+      return reversed * ((a.data < b.data) ? -1 : ((a.data == b.data) ? 0 : 1));
+    });
+    for (var k = 0; k < list.length; k++) {
+      names[k] = list[k].user;
+      data[k] = list[k].data;
+    }
   }
 
   renderEntry = (category: Category, entry: Entry, index: number) => {
@@ -221,10 +210,7 @@ class Results extends React.Component<AllProps> {
     };
     let userData = results.byUser;
     console.log('1:',userData);
-    let userdata = this.sortProperties(userData, 'data', true, true)
-    //let userdata = userData.sort(function (a: any, b: any) {
-    //  return b.data - a.data;
-    ///});
+    let userdata = this.sortProperties(userData.labels, userData.data, true)
     console.log('2:',userdata);
     let byUserResults = {
       labels: userData.labels,
@@ -291,7 +277,7 @@ class Results extends React.Component<AllProps> {
         />
         </div>
         <div>
-          <Bar data={byCategoryResults}
+          <HorizontalBar data={byCategoryResults}
             width={100}
             height={500}
             options={{
