@@ -13,6 +13,7 @@ export enum UserActionTypes {
   LOGIN = '@@user/LOGIN',
   LOGIN_SUCCESS = '@@user/LOGIN_SUCCESS',
   LOGOUT = '@@user/LOGOUT',
+  LOGOUT_SUCCESS = '@@user/LOGOUT_SUCCESS',
   EDIT = '@@user/EDIT',
   EDIT_SUCCESS = '@@user/EDIT_SUCCESS',
   GET = '@@user/GET',

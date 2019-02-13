@@ -34,7 +34,7 @@ ReactDOM.render(
         <Navigation>
             <BallotProgress history={history} />
         </Navigation>
-        <Route path="/" key="0" component={App} />
+        <Route path="/" exact key="0" component={App} />
         <Route path="/signup" key="1" component={Signup} />
         <Route path="/ballot" key="2" component={App} />
         <Route path="/login" exact key="3" component={Login} />

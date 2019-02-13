@@ -11,6 +11,7 @@ export const signup = (
     email: string
     ) => action(UserActionTypes.SIGNUP)
 export const logout = (id: number) => action(UserActionTypes.LOGOUT, id)
+export const logoutSuccess = () => action(UserActionTypes.LOGOUT_SUCCESS)
 export const error = (message: string) => action(UserActionTypes.ERROR, message)
 export const loginSuccess = (message: string) => action(UserActionTypes.LOGIN_SUCCESS, message)
 export const editSuccess = () => action(UserActionTypes.EDIT_SUCCESS)

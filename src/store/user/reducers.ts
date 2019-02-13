@@ -21,7 +21,7 @@ const reducer: Reducer<UserState> = (state = initialState, action) => {
         case UserActionTypes.EDIT: {
             return { ...state, loading: true }
         }
-        case UserActionTypes.LOGOUT: {
+        case UserActionTypes.LOGOUT_SUCCESS: {
             return {
                 id: null,
                 token: null,

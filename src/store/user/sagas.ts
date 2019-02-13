@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeEvery, takeLatest } from 'redux-saga/effects'
 import { UserActionTypes } from './types'
-import { login, logout, editUser, signup, loginSuccess, 
+import { login, logout, editUser, signup, loginSuccess, logoutSuccess,
   loginError, error, getSuccess, editSuccess } from './actions'
 import { callLogin, callLogout, callSignup, 
   callEditUser, callResetPassword, callRequestChange,
@@ -141,7 +141,8 @@ function* handleLogout() {
     // fire and forget logout
     yield call(callLogout);
     yield localStorage.clear();
-    history.push('/login');
+    yield put(logoutSuccess());
+    //history.push('/login');
   } catch (err) {
     if (err instanceof Error) {
       yield put(error(err.stack!))
