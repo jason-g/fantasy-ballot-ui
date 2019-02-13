@@ -6,6 +6,9 @@
 .category-card {
     border: 0px !important;
 }
+.card-body {
+    padding: 5px !important;
+}
 .category-entries {
     border: 0px !important;
 }

@@ -1,17 +1,19 @@
 import { all, call, fork, put, takeEvery, takeLatest } from 'redux-saga/effects'
 import { UserActionTypes } from './types'
-import { login, logout, editUser, signup, loginSuccess, loginError, error} from './actions'
-import { callLogin, callLogout, callSignup, callEditUser, callResetPassword, callRequestChange } from '../../utils/api'
+import { login, logout, editUser, signup, loginSuccess, 
+  loginError, error, getSuccess, editSuccess } from './actions'
+import { callLogin, callLogout, callSignup, 
+  callEditUser, callResetPassword, callRequestChange,
+  callGetUser } from '../../utils/api'
 import history from '../../components/history'
 import { isAuthenticated } from '../../utils/auth';
 
 function* handleLogin(user: any) {
   try {
     const res = yield call(callLogin, user.username, user.password )
-    if (JSON.parse(res).error) {
+    if (res.error) {
       yield put(error(res.error))
-      const err = JSON.parse(res);
-      yield put(loginError(err));
+      yield put(loginError(res.error));
     } else {
       localStorage.setItem('username',user.username);
       localStorage.setItem('user', res);
@@ -30,6 +32,26 @@ function* handleLogin(user: any) {
   }
 }
 
+function* handleGet(user: any) {
+  try {
+    const res = yield call(callGetUser, user.id )
+    if (JSON.parse(res).error) {
+      yield put(error(res.error))
+      const err = JSON.parse(res);
+      yield put(loginError(err));
+    } else {
+      yield put(getSuccess(res));
+      console.log('get user');
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      yield put(error(err.stack!))
+    } else {
+      yield put(error('An unknown error occured.'))
+    }
+  }
+}
+
 function* handleSignup(user: any) {
   try {
     const res = yield call(callSignup, user.username, user.password, user.email )
@@ -38,8 +60,9 @@ function* handleSignup(user: any) {
     } else {
       localStorage.setItem('username',user.username);
       //ToDo: signupSuccess
-      yield put(loginSuccess(res));
-      history.push('/login');
+      //yield put(loginSuccess(res));
+      // successful signup - auto login
+      yield handleLogin(user);
     }
   } catch (err) {
     if (err instanceof Error) {
@@ -100,12 +123,9 @@ function* handleEdit(user: any) {
       if (localUser) {
         tmpUser = JSON.parse(localUser);
       }
-      let tmpUser2 = JSON.parse(res);
-      if (tmpUser2.username) {
-        tmpUser.username = tmpUser2.username;
-      }
-      localStorage.setItem('user', tmpUser);
-      yield put(loginSuccess(tmpUser));
+      tmpUser.username = user.username;
+      localStorage.setItem('user', JSON.stringify(tmpUser));
+      yield put(editSuccess());
     }
   } catch (err) {
     if (err instanceof Error) {
@@ -148,6 +168,10 @@ function* watchSignupRequest() {
   yield takeEvery(UserActionTypes.SIGNUP, handleSignup,)
 }
 
+function* watchGet() {
+  yield takeEvery(UserActionTypes.GET, handleGet,)
+}
+
 function* watchRequestChange() {
   yield takeEvery(UserActionTypes.REQUEST_CHANGE, handleRequestChange,)
 }
@@ -174,6 +198,7 @@ function* entriesSaga() {
     fork(watchLogoutRequest),
     fork(watchSignupRequest),
     fork(watchEditRequest),
+    fork(watchGet),
     fork(watchRequestChange),
     fork(watchResetPassword),
     fork(watchAddTokenRequest),

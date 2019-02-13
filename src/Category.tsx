@@ -81,7 +81,7 @@ export default class CategoryCard extends React.Component<IProps, any> {
         const selection: cleanSelection | undefined = this.props.selection;
         return (
             <div>
-                <Card onClick={this.toggle} className="pointer category-card">
+                <Card onClick={this.toggle} className="pointer category-card mt-5">
                     <CardBody>
                         <div className="category-title">
                         <span className="btn btn-category btn-outline-warning">

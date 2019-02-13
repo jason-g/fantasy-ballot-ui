@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "style": "src/App.css",
-  "proxy": "http://localhost:3069/api/",
+  "proxy": "http://localhost:3069/",
   "dependencies": {
     "@material-ui/core": "^3.9.2",
     "@types/graphql": "^14.0.5",

@@ -2,9 +2,10 @@ import React from 'react';
 import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import { connect } from 'react-redux';
 import Container from 'reactstrap/lib/Container';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { UserState } from '../store/user/types';
 import Alert from 'reactstrap/lib/Alert';
+import { userInfo } from 'os';
 
 
 interface PropsFromDispatch {
@@ -98,13 +99,25 @@ class EditUser extends React.Component<AllProps, myState> {
         if (!this.props.user) {
             return;
         }
-        if (this.props.user.message && this.props.user.message.error) {
-            return (
-                <Alert color="danger">
-                    EditUser error: <br />
-                    {this.props.user.message.error.message}
-                </Alert>
-            )
+        if (this.props.user.message) {
+            switch (this.props.user.message.code) {
+                case 'CHANGE_FAILED': {
+                    return (
+                        <Alert color="danger">
+                            Something went wrong - Contact the administrator for further help.
+                        </Alert>
+                    );
+                    break;
+                }
+                default: {
+                    return (
+                        <div className="alert alert-success" role="alert">
+                            Succesfully applied your changes, you may <NavLink to="/ballot" className="alert-link">go back to your ballot</NavLink>.
+                        </div>  
+                    );
+                    break;
+                }
+            }
         }
     }
 
@@ -122,22 +135,23 @@ class EditUser extends React.Component<AllProps, myState> {
     render() {
         return (
             <Container className="EditUser">
-                <h2>Sign up</h2>
+                <h2>Edit your user settings</h2>
                 {this.showMessage()}
                 <Form>
+                    <span className="font-weight-light font-italic">Leave fields empty to leave them unchanged.</span>
+                    <br />
                     <FormGroup>
-                        <Label for="edituserText">Username</Label>
+                        <Label for="edituserText">Username ({this.props.user.username})</Label>
                         <Input name="username" id="username" onChange={this.handleChange.bind(this)} />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="edituserEmail">Email</Label>
+                        <Label for="edituserEmail">Email ({this.props.user.email})</Label>
                         <Input type="email" name="email"
-                            id="edituserEmail" placeholder="email address"
+                            id="edituserEmail" placeholder={(this.props.user.email)? this.props.user.email : ''}
                             valid={this.state.validate.emailState === 'has-success'}
                             invalid={this.state.validate.emailState === 'has-danger'}
-                            onChange={
-                                this.handleChange
-                            } />
+                            onChange={ this.handleChange } 
+                            />
                     </FormGroup>
                     <FormGroup>
                         <Label for="edituserPassword">Password</Label>
@@ -148,6 +162,15 @@ class EditUser extends React.Component<AllProps, myState> {
                 </Form>
             </Container>
         );
+    }
+
+    componentDidMount() {
+        if (this.state.userId) {
+            this.props.dispatch({
+                type: "@@user/GET",
+                id: this.state.userId,
+            })
+        }
     }
 }
 

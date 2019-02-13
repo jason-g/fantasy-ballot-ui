@@ -4,6 +4,7 @@ import './login.css';
 import Container from 'reactstrap/lib/Container';
 import Col from 'reactstrap/lib/Col';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 
 interface PropsFromDispatch {
@@ -89,8 +90,15 @@ class requestChange extends React.Component<AllProps, myState> {
                             } />
                         </FormGroup>
                     </Col>
-                    <Button type="submit" onClick={this.handleSubmit.bind(this)}>Request to reset your password</Button>
+                    <div className="d-flex justify-content-center">
+                        <Button type="submit" onClick={this.handleSubmit.bind(this)}>Request to reset your password</Button>
+                    </div>
                 </Form>
+                <div className="d-flex justify-content-center">
+                    <span className="text-center">
+                        Already have an account?  <Link to="/login">Login</Link>
+                    </span>
+                </div>
             </Container>
         );
     }

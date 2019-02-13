@@ -147,7 +147,6 @@ class Results extends React.Component<AllProps> {
   render() {
     if (!this.props.user.authenticated) {
       this.preAuthCheck();
-      console.log('No user... redirecting to Login page');
       return <Redirect to='/login' />;
     }
     // get the state
@@ -178,9 +177,14 @@ class Results extends React.Component<AllProps> {
             <Container fluid>
               <h1 className="display-4">91st Academy Awards</h1>
               <hr className="my-2" />
-              <p>Live Results are not avaiable until all submissions are locked</p>
             </Container>
           </Jumbotron>
+        </div>
+        <div className="alert alert-success" role="alert">
+          <h4 className="alert-heading">So close...</h4>
+          <p>We know you are eager to see the results. Unfortunately they are not avaiable yet.</p>
+          <hr />
+            <p className="mb-0">Please come back here once the Administrator has locked all ballots.</p>
         </div>
       </div>
       )
@@ -188,7 +192,12 @@ class Results extends React.Component<AllProps> {
     let data: any[] = [];
     if (!results) {
       return (
-        <div>No results available yet ... please check back soon.</div>
+        <div className="alert alert-success" role="alert">
+          <h4 className="alert-heading">So close...</h4>
+          <p>We know you are eager to see the results. Unfortunately they are not avaiable yet.</p>
+          <hr />
+            <p className="mb-0">Please come back here once the Administrator has locked all ballots.</p>
+        </div>
       );
     }
     let categoryData = results.byCategory;
@@ -209,9 +218,7 @@ class Results extends React.Component<AllProps> {
       ]
     };
     let userData = results.byUser;
-    console.log('1:',userData);
     let userdata = this.sortProperties(userData.labels, userData.data, true)
-    console.log('2:',userdata);
     let byUserResults = {
       labels: userData.labels,
       datasets: [

@@ -47,6 +47,30 @@ const reducer: Reducer<UserState> = (state = initialState, action) => {
                 username: action.payload.username,
             }
         }
+        case UserActionTypes.GET_SUCCESS: {
+            const user = JSON.parse(action.payload);
+            return {
+                ...state,
+                loading: false,
+                authenticated: true,
+                token: user.token,
+                id: user.id,
+                userId: user.userId,
+                roles: user.roles,
+                username: user.username,
+                email: user.email,
+            }
+        }
+        case UserActionTypes.EDIT_SUCCESS: {
+            const msg = {
+                "code": "SUCCESS"
+            }
+            return {
+                ...state,
+                loading: false,
+                message: msg,
+            }
+        }
         case UserActionTypes.ADD_TOKEN: {
             const user = JSON.parse(action.user);
             //ToDo add api check

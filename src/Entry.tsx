@@ -32,14 +32,15 @@ export default class EntryCard extends React.Component<IProps> {
                       <CardTitle>{entry.display_name}</CardTitle>
                   </span>
               </CardBody>
-              <div className="text-center"> {!hasImage? '' : 
+              {!hasImage? '' :
+              <div className="text-center">  
 
                   <CardImg top width="100%"
                       src={entry.featured_image}
                       className="mh-50 round-img"
                       alt={"Image for" + entry.display_name} />
-              }
               </div>
+              }
               <CardBody>
                   <span className="text-center">
                       <CardText>
@@ -48,7 +49,9 @@ export default class EntryCard extends React.Component<IProps> {
                   </span>
                   <span>
                       <CardText className="card-link">
-                          <a href={entry.featured_video} target="_blank">View trailer...</a>
+                          <a href={entry.featured_video} target="_blank">
+                            <i className="fas fa-film" title="View trailer"></i>
+                          </a>
                       </CardText>
                   </span>
               </CardBody>

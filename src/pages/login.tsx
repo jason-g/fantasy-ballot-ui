@@ -74,12 +74,20 @@ class Login extends React.Component<AllProps, myState> {
         if (!this.props.user) {
             return;
         }
-        if (this.props.user.message && this.props.user.message.error) {
-            return (
-                <Alert color="danger">
-                    Authentication error! <br />Looks like that is either the wrong username or password.
-                </Alert>
-            )
+        if (this.props.user.message) {
+            switch (this.props.user.message.code) {
+                case 'LOGIN_FAILED': {
+                    return (
+                        <Alert color="danger">
+                            Authentication error! <br />Looks like that is either the wrong username or password.
+                        </Alert>
+                    );
+                    break;
+                }
+                default: {
+                    break;
+                }
+            } 
         }
     }
 
@@ -102,15 +110,20 @@ class Login extends React.Component<AllProps, myState> {
                                 id="loginPassword" placeholder="password" onChange={this.handleChange.bind(this)} />
                         </FormGroup>
                     </Col>
-                    <Button type="submit" onClick={this.handleSubmit.bind(this)}>Sign in</Button>
+                    <div className="d-flex justify-content-center">
+                        <Button type="submit" onClick={this.handleSubmit.bind(this)}>Sign in</Button>
+                    </div>
                 </Form>
-                <span>
-                    Don't have an account yet?  <Link to="/signup">Sign up for an account</Link>
-                </span>
-                <br></br>
-                <span>
-                    Forgot your password? <Link to="/request-change">reset password</Link>
-                </span>
+                <div className="d-flex justify-content-center">
+                    <span className="text-center font-weight-light">
+                        Don't have an account yet?  <Link to="/signup">Sign up for an account</Link>
+                    </span>
+                </div>
+                <div className="d-flex justify-content-center">
+                    <span className="text-center pt-1 font-weight-light">
+                        Forgot your password? <Link to="/request-change">reset password</Link>
+                    </span>
+                </div>
             </Container>
         );
     }

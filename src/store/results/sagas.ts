@@ -61,33 +61,21 @@ function normalieIt(categories: Category[], selections: Selection[]) {
             }
             const cat_id = selection.category_id;
             const ent_id = selection.entry_id;
-            console.log('U:'+uname+' CAT:'+cat_id+' ENT:'+ent_id);
-            console.log(winnersMap[cat_id]); 
             if (winnersMap[cat_id] == ent_id) {
-                console.log('INSIDE:'+tmpMergeByUser[uname])
                 tmpMergeByUser[uname]++;
             }
         }
     });
-    console.log('TMPUSR:', tmpMergeByUser);
     Object.keys(tmpMergeByUser).map(function(userKey) {
         if (userKey && (userKey != undefined)) {
-            console.log('UK:',userKey);
-            console.log('DU:',tmpMergeByUser[userKey]);
             labelsUser.push(userKey);
             dataUser.push(tmpMergeByUser[userKey]);
-            console.log('dataUser:',dataUser,labelsUser);
         }
     });
     mergeByUser = {
         labels: labelsUser,
         data: dataUser,
     }
-    console.log('winners map :', winnersMap);
-    console.log('winners map0:', labelsUser);
-    console.log('winners map0:', dataUser);
-    console.log('mergedUser:', mergeByUser);
-
     return ({"byCategory": mergeByCategory, "byUser": mergeByUser});
 }
 

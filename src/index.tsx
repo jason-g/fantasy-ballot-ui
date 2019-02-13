@@ -29,12 +29,12 @@ const store = configureStore();
 const rootElement = document.getElementById('root')
 ReactDOM.render(
   <Provider store={store}>
-  <Navigation>
-        <BallotProgress />
-  </Navigation>
     <Router history={history}>
       <div className="main-body">
-        <Redirect from="/" exact to="/ballot" />
+        <Navigation>
+            <BallotProgress history={history} />
+        </Navigation>
+        <Route path="/" key="0" component={App} />
         <Route path="/signup" key="1" component={Signup} />
         <Route path="/ballot" key="2" component={App} />
         <Route path="/login" exact key="3" component={Login} />

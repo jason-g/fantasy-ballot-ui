@@ -9,7 +9,7 @@ export async function callApi(method: string, url: string, path: string, data?: 
         console.log('No user token present!');
        // return ({});
     }
-    const res = await fetch(path, {
+    const res = await fetch('/api'+path, {
         method,
         headers: {
             Accept: 'application/json',
@@ -28,7 +28,7 @@ export async function makeSelection(category_id: number, entry_id: number, id: n
         return({});
     }
     if (id) {
-        const response = await fetch('/selections/'+id, {
+        const response = await fetch('/api/selections/'+id, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ export async function makeSelection(category_id: number, entry_id: number, id: n
         const body = await response.text();
         return (body);
     } else {
-        const response = await fetch('/selections', {
+        const response = await fetch('/api/selections', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ export async function selectWinner(category: Category) {
         return({});
     }
     if (dbid) {
-        const response = await fetch('/categories/'+dbid, {
+        const response = await fetch('/api/categories/'+dbid, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ export async function saveGlobals(action: any) {
         return({});
     }
     if (globals) {
-        const response = await fetch('/globals/', {
+        const response = await fetch('/api/globals/', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ export async function saveGlobals(action: any) {
 }
 
 export async function callLogin(username: string, password: string) {
-    let response = await fetch('/People/login', {
+    let response = await fetch('/api/People/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -114,8 +114,11 @@ export async function callLogin(username: string, password: string) {
     });
     const loginResponse = await response.text();
     let userModel = JSON.parse(loginResponse);
+    if (userModel.error) {
+        return userModel;
+    }
     userModel.roles = [];
-    let fooresponse = await fetch('/People/' + userModel.userId + '/roles/', {
+    let fooresponse = await fetch('/api/People/' + userModel.userId + '/roles/', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -136,7 +139,7 @@ export async function callLogout() {
         console.log('No user token present!');
         return({});
     }
-    const response = await fetch('/People/logout', {
+    const response = await fetch('/api/People/logout', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -149,7 +152,7 @@ export async function callLogout() {
 }
 
 export async function callSignup(username: string, password: string, email: string) {
-    const response = await fetch('/People', {
+    const response = await fetch('/api/People', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -161,7 +164,7 @@ export async function callSignup(username: string, password: string, email: stri
 }
 
 export async function callResetPassword(token: any, password: string) {
-    const response = await fetch('/People/reset-password', {
+    const response = await fetch('/api/People/reset-password', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -174,7 +177,7 @@ export async function callResetPassword(token: any, password: string) {
 }
 
 export async function callRequestChange(email: string) {
-    const response = await fetch('/People/reset', {
+    const response = await fetch('/api/People/reset', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -185,20 +188,42 @@ export async function callRequestChange(email: string) {
     return (body);
 }
 
-export async function callEditUser(userid: number, username: string, password: string, email: string) {
+export async function callGetUser(id: number) {
+    if (!id) {
+        console.log('Attempting to get user without ID');
+        return
+    }
+    const response = await fetch('/api/People/' + id, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    const body = await response.text();
+    return (body);
+}
+
+export async function callEditUser(userid: number, username?: string, password?: string, email?: string) {
     const user: any = JSON.parse(localStorage.getItem('user') || '{}');
     const token = user && user.id;
     if (!token) {
         console.log('No user token present!');
         return({});
     }
-    const response = await fetch('/People/' + userid, {
-        method: 'PUT',
+    let tmpSend: any = {};
+    if (username)
+        tmpSend.username = username;
+    if (email)
+        tmpSend.email = email;
+    if (password)
+        tmpSend.password = password;
+    const response = await fetch('/api/People/' + userid, {
+        method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': token,
         },
-        body: JSON.stringify({ "username": username, "password": password, "email": email }),
+        body: JSON.stringify(tmpSend),
     });
     const body = await response.text();
     return (body);

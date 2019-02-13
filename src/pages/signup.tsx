@@ -138,9 +138,15 @@ class Signup extends React.Component<AllProps, myState> {
                         <Input type="password" name="password"
                             id="signupPassword" placeholder="password" onChange={this.handleChange} />
                     </FormGroup>
-                    <Button type="submit" onClick={this.handleSubmit.bind(this)}>Sign up</Button>
+                    <div className="d-flex justify-content-center">
+                        <Button type="submit" onClick={this.handleSubmit.bind(this)}>Sign up</Button>
+                    </div>
                 </Form>
-                Already have an account?  <Link to="/login">Login</Link>
+                <div className="d-flex justify-content-center">
+                    <span className="text-center">
+                        Already have an account?  <Link to="/login">Login</Link>
+                    </span>
+                </div>
             </Container>
         );
     }

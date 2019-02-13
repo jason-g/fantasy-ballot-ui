@@ -4,10 +4,6 @@ import { connect } from 'react-redux';
 import './login.css';
 import Container from 'reactstrap/lib/Container';
 import Col from 'reactstrap/lib/Col';
-import { withRouter, Redirect, Link } from 'react-router-dom';
-import { isAuthenticated } from '../utils/auth';
-import Alert from 'reactstrap/lib/Alert';
-import { UserState } from '../store/user/types';
 import queryString from 'query-string';
 
 
@@ -75,8 +71,11 @@ class ResetPassword extends React.Component<AllProps, myState> {
                                 id="loginPassword" placeholder="password" onChange={this.handleChange.bind(this)} />
                         </FormGroup>
                     </Col>
-                    <Button type="submit" onClick={this.handleSubmit.bind(this)}>Reset password</Button>
+                    <div className="d-flex justify-content-center">
+                        <Button type="submit" onClick={this.handleSubmit.bind(this)}>Reset password</Button>
+                    </div>
                 </Form>
+                
             </Container>
         );
     }
