@@ -33,7 +33,7 @@
     margin: 1rem .25em;
     box-sizing: border-box;
     margin: 5px !important;
-    padding-top: 0px;
+    padding: 0px !important;
 }
 .entry-card-selected {
     /* background-color: gold !important;*/
@@ -71,7 +71,7 @@
  }
 @media screen and (min-width: 0em) {
     .entry-card {
-       min-width: calc(90% -  2em);
+       min-width: calc(50% -  2em);
     }
     .card-title {
         font-size: medium;
@@ -83,7 +83,7 @@
 
 @media screen and (min-width: 30em) {
     .entry-card {
-       min-width: calc(50% -  1em);
+       min-width: calc(33% -  1em);
     }
     .card-title {
         font-size: large;
@@ -95,7 +95,7 @@
 
 @media screen and (min-width: 60em) {
     .entry-card {
-        min-width: calc(33% - 1em);
+        min-width: calc(20% - 1em);
     }
     .card-title {
         font-size: larger;
