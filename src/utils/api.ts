@@ -132,6 +132,26 @@ export async function callLogin(username: string, password: string) {
     return (JSON.stringify(userModel));
 }
 
+export async function callTokenCheck(token: string, id: number) {
+    let response = await fetch('/api/People/'+id+'/accessTokens', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token,
+        },
+    });
+    const checkResponse = await response.text();
+    let checkResults = JSON.parse(checkResponse);
+    if (checkResults.error) {
+        return checkResults;
+    }
+    let tmpCheck = checkResults.filter((result: any) => (result.id === token));
+    if (tmpCheck.length > 0) {
+        return true;
+    }
+    return false;
+}
+
 export async function callLogout() {
     const user: any = JSON.parse(localStorage.getItem('user') || '{}');
     const token = user && user.id;
@@ -203,7 +223,7 @@ export async function callGetUser(id: number) {
     return (body);
 }
 
-export async function callEditUser(userid: number, username?: string, password?: string, email?: string) {
+export async function callEditUser(userid: number, username?: string, password?: string, email?: string, avatar?: string) {
     const user: any = JSON.parse(localStorage.getItem('user') || '{}');
     const token = user && user.id;
     if (!token) {
@@ -215,6 +235,8 @@ export async function callEditUser(userid: number, username?: string, password?:
         tmpSend.username = username;
     if (email)
         tmpSend.email = email;
+    if (avatar)
+        tmpSend.avatar =avatar; 
     if (password)
         tmpSend.password = password;
     const response = await fetch('/api/People/' + userid, {

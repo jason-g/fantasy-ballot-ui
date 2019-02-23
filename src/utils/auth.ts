@@ -1,3 +1,6 @@
+import { callTokenCheck } from "./api";
+
+
 export async function isAuthenticated() {
     //const res = await fetch(url + '/' + path, {
     const user: any = JSON.parse(localStorage.getItem('user') || '{}');
@@ -6,6 +9,5 @@ export async function isAuthenticated() {
         console.log('No user token present!');
        return false;
     }
-    // ToDo: check validity of token
-    return true;
+    return callTokenCheck(token, user.userId);
 }
