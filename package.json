@@ -24,7 +24,7 @@
     "graphql": "^14.1.1",
     "graphql-tag": "^2.10.1",
     "history": "^4.7.2",
-    "jquery": "^3.3.1",
+    "jquery": "^3.5.0",
     "jss": "^10.0.0-alpha.9",
     "query-string": "^6.2.0",
     "react": "^16.7.0",
